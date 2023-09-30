@@ -129,7 +129,7 @@ class _ProfilePageState extends State<ProfilePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Profile')),
+      appBar: TransparentAppBar(),
       body: _loading
           ? const Center(child: CircularProgressIndicator())
           : ListView(
@@ -148,7 +148,10 @@ class _ProfilePageState extends State<ProfilePage> {
                     decoration: const InputDecoration(
                       labelText: 'Working On',
                       alignLabelWithHint: true,
+                      hintText: 'What are you working on?',
+                      floatingLabelBehavior: FloatingLabelBehavior.always,
                     ),
+                    textAlignVertical: TextAlignVertical.top,
                     maxLines: null,
                     expands: true,
                   ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:work_with/pages/profile_page.dart';
+import 'package:work_with/pages/home_page.dart';
 import 'package:work_with/utils/constants.dart';
 
 class LoginPage extends StatefulWidget {
@@ -29,7 +29,7 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
       Navigator.of(context)
-          .pushAndRemoveUntil(ProfilePage.route(), (route) => false);
+          .pushAndRemoveUntil(HomePage.route(), (route) => false);
     } on AuthException catch (error) {
       context.showErrorSnackBar(message: error.message);
     } catch (_) {
@@ -52,7 +52,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Sign In')),
+      appBar: TransparentBackButtonAppBar(),
       body: ListView(
         padding: formPadding,
         children: [
@@ -70,7 +70,10 @@ class _LoginPageState extends State<LoginPage> {
           formSpacer,
           ElevatedButton(
             onPressed: _isLoading ? null : _signIn,
-            child: const Text('Login'),
+            child: Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: const Text('Login', style: TextStyle(fontSize: 20)),
+            ),
           ),
         ],
       ),

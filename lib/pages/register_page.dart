@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:work_with/pages/home_page.dart';
 import 'package:work_with/pages/login_page.dart';
-import 'package:work_with/pages/profile_page.dart';
 import 'package:work_with/utils/constants.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -40,7 +40,7 @@ class _RegisterPageState extends State<RegisterPage> {
       await supabase.auth.signUp(
           email: email, password: password, data: {'username': username});
       Navigator.of(context)
-          .pushAndRemoveUntil(ProfilePage.route(), (route) => false);
+          .pushAndRemoveUntil(HomePage.route(), (route) => false);
     } on AuthException catch (error) {
       context.showErrorSnackBar(message: error.message);
     } catch (error) {
@@ -52,13 +52,16 @@ class _RegisterPageState extends State<RegisterPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Register'),
+        backgroundColor: Colors.transparent,
+        elevation: 0,
       ),
       body: Form(
         key: _formKey,
         child: ListView(
           padding: formPadding,
           children: [
+            Center(child: Text('Register', style: TextStyle(fontSize: 30))),
+            SizedBox(height: 25),
             TextFormField(
               controller: _emailController,
               decoration: const InputDecoration(
@@ -109,14 +112,17 @@ class _RegisterPageState extends State<RegisterPage> {
             formSpacer,
             ElevatedButton(
               onPressed: _isLoading ? null : _signUp,
-              child: const Text('Register'),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: const Text('Register', style: TextStyle(fontSize: 20)),
+              ),
             ),
-            formSpacer,
             TextButton(
               onPressed: () {
                 Navigator.of(context).push(LoginPage.route());
               },
-              child: const Text('I already have an account'),
+              child: const Text('I already have an account',
+                  style: TextStyle(fontSize: 16)),
             )
           ],
         ),

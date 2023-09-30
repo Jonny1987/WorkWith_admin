@@ -81,3 +81,51 @@ extension ShowSnackBar on BuildContext {
     showSnackBar(message: message, backgroundColor: Colors.red);
   }
 }
+
+class TransparentBackButtonAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  TransparentBackButtonAppBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      automaticallyImplyLeading: false,
+      leadingWidth: 100,
+      leading: ElevatedButton.icon(
+        onPressed: () => Navigator.of(context).pop(),
+        icon: const Icon(
+          Icons.arrow_back,
+          color: Colors.black,
+        ),
+        label: const Text('Back',
+            style: TextStyle(color: Colors.black, fontSize: 16)),
+        style: ElevatedButton.styleFrom(
+          elevation: 0,
+          backgroundColor: Colors.transparent,
+        ),
+      ),
+    );
+  }
+
+  @override
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight); // This is the default AppBar height
+}
+
+class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
+  TransparentAppBar({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+    );
+  }
+
+  @override
+  Size get preferredSize =>
+      Size.fromHeight(kToolbarHeight); // This is the default AppBar height
+}
