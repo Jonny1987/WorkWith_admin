@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:work_with/pages/profile_page.dart';
+import 'package:work_with/tabs/map/map_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -15,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final List<Widget> _pages = const [Text('Map'), ProfilePage()];
+  final List<Widget> _pages = const [MapTab(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {

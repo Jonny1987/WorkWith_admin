@@ -129,3 +129,19 @@ class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize =>
       Size.fromHeight(kToolbarHeight); // This is the default AppBar height
 }
+
+
+// class Constants extends StatelessWidget {
+// const Constants({ Key? key }) : super(key: key);
+
+//   @override
+//   Widget build(BuildContext context){
+//     return ElevatedButton(
+//       onPressed: _isLoading ? null : _signUp,
+//       child: Padding(
+//         padding: const EdgeInsets.all(10.0),
+//         child: const Text('Register', style: TextStyle(fontSize: 20)),
+//       ),
+//     ),
+//   }
+// }

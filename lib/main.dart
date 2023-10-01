@@ -7,7 +7,6 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await Supabase.initialize(
-    // TODO: Replace credentials with your own
     url: 'https://deyrvouslmxlaqisulmo.supabase.co',
     anonKey:
         'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRleXJ2b3VzbG14bGFxaXN1bG1vIiwicm9sZSI6ImFub24iLCJpYXQiOjE2OTU3NjM5NzYsImV4cCI6MjAxMTMzOTk3Nn0._LUDdAHW4cjuu5NlQYdNTZuktuwptT2v_f8W1QnjwSU',
@@ -22,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'My Chat App',
+      title: 'WorkWith',
       theme: appTheme,
       home: const SplashPage(),
     );
