@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:work_with/tabs/map/map_widget.dart';
-import 'package:work_with/utils/map.dart';
+import 'package:workwith_admin/tabs/map/map_widget.dart';
+import 'package:workwith_admin/utils/map.dart';
 
 class MapTab extends StatefulWidget {
   const MapTab({super.key});

@@ -1,6 +1,6 @@
 {
-    "name": "work_with",
-    "short_name": "work_with",
+    "name": "workwith_admin",
+    "short_name": "workwith_admin",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",

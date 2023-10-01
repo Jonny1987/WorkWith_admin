@@ -1,6 +1,6 @@
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:work_with/utils/constants.dart';
+import 'package:workwith_admin/utils/constants.dart';
 
 class LocationResult {
   final LatLng? location;

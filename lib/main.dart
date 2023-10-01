@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:work_with/pages/splash_page.dart';
-import 'package:work_with/utils/constants.dart';
+import 'package:workwith_admin/pages/splash_page.dart';
+import 'package:workwith_admin/utils/constants.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

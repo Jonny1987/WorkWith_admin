@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:work_with/pages/profile_page.dart';
-import 'package:work_with/tabs/map/map_tab.dart';
+import 'package:workwith_admin/pages/profile_page.dart';
+import 'package:workwith_admin/tabs/map/map_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);

@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:work_with/pages/home_page.dart';
-import 'package:work_with/pages/login_page.dart';
-import 'package:work_with/utils/constants.dart';
+import 'package:workwith_admin/pages/home_page.dart';
+import 'package:workwith_admin/pages/login_page.dart';
+import 'package:workwith_admin/utils/constants.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({Key? key, required this.isRegistering}) : super(key: key);

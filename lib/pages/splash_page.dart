@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:work_with/pages/profile_page.dart';
-import 'package:work_with/pages/register_page.dart';
-import 'package:work_with/utils/constants.dart';
+import 'package:workwith_admin/pages/profile_page.dart';
+import 'package:workwith_admin/pages/register_page.dart';
+import 'package:workwith_admin/utils/constants.dart';
 
 /// Page to redirect users to the appropriate page depending on the initial auth state
 class SplashPage extends StatefulWidget {

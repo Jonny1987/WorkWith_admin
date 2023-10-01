@@ -1,4 +1,4 @@
-package com.example.work_with
+package com.example.workwith_admin
 
 import io.flutter.embedding.android.FlutterActivity
 

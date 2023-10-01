@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:work_with/pages/login_page.dart';
-import 'package:work_with/utils/constants.dart';
+import 'package:workwith_admin/pages/login_page.dart';
+import 'package:workwith_admin/utils/constants.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
