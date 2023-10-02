@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:workwith_admin/pages/profile_page.dart';
-import 'package:workwith_admin/pages/register_page.dart';
+import 'package:workwith_admin/pages/home_page.dart';
+import 'package:workwith_admin/pages/login_page.dart';
 import 'package:workwith_admin/utils/constants.dart';
 
 /// Page to redirect users to the appropriate page depending on the initial auth state
@@ -25,10 +25,10 @@ class SplashPageState extends State<SplashPage> {
     final session = supabase.auth.currentSession;
     if (session == null) {
       Navigator.of(context)
-          .pushAndRemoveUntil(RegisterPage.route(), (route) => false);
+          .pushAndRemoveUntil(LoginPage.route(), (route) => false);
     } else {
       Navigator.of(context)
-          .pushAndRemoveUntil(ProfilePage.route(), (route) => false);
+          .pushAndRemoveUntil(HomePage.route(), (route) => false);
     }
   }
 

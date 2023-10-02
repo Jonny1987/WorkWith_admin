@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:workwith_admin/tabs/map/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
 class MapWidget extends StatefulWidget {
@@ -29,7 +30,8 @@ class _MapWidgetState extends State<MapWidget> {
         position: LatLng(venue['lat'], venue['long']),
         infoWindow: InfoWindow(
           title: venue['name'],
-          snippet: venue['address'],
+          onTap: () =>
+              Navigator.of(context).push(EditVenuePopup.route(venue['id'])),
         ),
         icon: BitmapDescriptor.defaultMarker,
       );

@@ -25,26 +25,34 @@ class _MapTabState extends State<MapTab> {
             return MapWidget(currentLocation: snapshot.data!.location!);
           } else if (snapshot.data?.status ==
               LocationServiceStatus.serviceDisabled) {
-            return const Scaffold(
-                body: Center(
-                    child: Text(
-                        'Please enable location services in your device settings.')));
+            return const PermissionMessage(
+                message:
+                    'please enable location services in your device settings.');
           } else if (snapshot.data?.status ==
               LocationServiceStatus.permissionDenied) {
-            return const Scaffold(
-                body: Center(
-                    child:
-                        Text('Please allow permission to access location.')));
+            return const PermissionMessage(
+                message:
+                    'Please allow permission to access location in your device settings.');
           } else if (snapshot.data?.status ==
               LocationServiceStatus.permissionDeniedForever) {
-            return const Scaffold(
-                body: Center(
-                    child:
-                        Text('Please allow permission to access location.')));
+            return const PermissionMessage(
+                message:
+                    'Please allow permission to access location in your device settings.');
           }
         }
         return Center(child: CircularProgressIndicator());
       },
     );
+  }
+}
+
+class PermissionMessage extends StatelessWidget {
+  final String message;
+
+  const PermissionMessage({required this.message});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(body: Center(child: Text(message)));
   }
 }

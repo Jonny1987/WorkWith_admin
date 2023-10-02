@@ -1,4 +1,3 @@
-# WorkWith
+# WorkWith admin
 
-An app for digital nomads and remote workers to work together in hotels, cafes and resturants
-
+This is for adding and deleting locations for WorkWith

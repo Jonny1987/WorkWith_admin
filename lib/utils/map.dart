@@ -58,3 +58,12 @@ Future<List<dynamic>> getVenues(LatLng _center) async {
   });
   return data;
 }
+
+Future<List<dynamic>> getRecentVenues(int limit) async {
+  final data = await supabase
+      .from('venues')
+      .select('id, name')
+      .order('updated_at')
+      .limit(limit);
+  return data;
+}

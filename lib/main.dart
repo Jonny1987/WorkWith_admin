@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'WorkWith',
+      title: 'WorkWith admin',
       theme: appTheme,
       home: const SplashPage(),
     );

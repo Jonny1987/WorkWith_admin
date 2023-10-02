@@ -28,16 +28,23 @@ class _LoginPageState extends State<LoginPage> {
         email: _emailController.text,
         password: _passwordController.text,
       );
+      final User? user = supabase.auth.currentUser;
+      if (!user!.appMetadata.containsKey('is_admin') ||
+          user.appMetadata['is_admin'] != true) {
+        context.showErrorSnackBar(message: 'Only admins can use this app!');
+        supabase.auth.signOut();
+        Navigator.of(context).pushReplacement(LoginPage.route());
+        return;
+      }
       Navigator.of(context)
           .pushAndRemoveUntil(HomePage.route(), (route) => false);
     } on AuthException catch (error) {
       context.showErrorSnackBar(message: error.message);
-    } catch (_) {
-      context.showErrorSnackBar(message: unexpectedErrorMessage);
     }
+
     if (mounted) {
       setState(() {
-        _isLoading = true;
+        _isLoading = false;
       });
     }
   }
@@ -52,7 +59,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: TransparentBackButtonAppBar(),
+      appBar: const TransparentAppBar(),
       body: ListView(
         padding: formPadding,
         children: [

@@ -84,7 +84,7 @@ extension ShowSnackBar on BuildContext {
 
 class TransparentBackButtonAppBar extends StatelessWidget
     implements PreferredSizeWidget {
-  TransparentBackButtonAppBar({Key? key}) : super(key: key);
+  const TransparentBackButtonAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -115,7 +115,7 @@ class TransparentBackButtonAppBar extends StatelessWidget
 }
 
 class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
-  TransparentAppBar({Key? key}) : super(key: key);
+  const TransparentAppBar({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
