@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
-import 'package:workwith_admin/pages/list_page.dart';
 import 'package:workwith_admin/pages/profile_page.dart';
-import 'package:workwith_admin/tabs/map/map_tab.dart';
+import 'package:workwith_admin/tabs/edit_tab/map_view/edit_tab.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -17,7 +16,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
-  final List<Widget> _pages = const [MapTab(), ListPage(), ProfilePage()];
+  final List<Widget> _pages = const [EditTab(), ProfilePage()];
 
   @override
   Widget build(BuildContext context) {
@@ -43,8 +42,8 @@ class _HomePageState extends State<HomePage> {
             gap: 8,
             padding: EdgeInsets.all(16),
             tabs: const [
-              GButton(icon: Icons.map, text: 'Map'),
-              GButton(icon: Icons.map, text: 'List'),
+              GButton(icon: Icons.map, text: 'Edit'),
+              GButton(icon: Icons.map, text: 'Add'),
               GButton(icon: Icons.person, text: 'Profile'),
             ],
           ),

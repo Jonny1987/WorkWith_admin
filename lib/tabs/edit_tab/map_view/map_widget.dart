@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:workwith_admin/tabs/map/edit_venue_popup.dart';
+import 'package:workwith_admin/tabs/edit_tab/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
 class MapWidget extends StatefulWidget {
@@ -56,6 +56,7 @@ class _MapWidgetState extends State<MapWidget> {
           target: widget.currentLocation,
           zoom: 15,
         ),
+        myLocationButtonEnabled: true,
       ),
     );
   }

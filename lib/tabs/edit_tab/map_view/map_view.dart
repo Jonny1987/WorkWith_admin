@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:workwith_admin/tabs/map/map_widget.dart';
+import 'package:workwith_admin/tabs/edit_tab/map_view/map_widget.dart';
 import 'package:workwith_admin/utils/map.dart';
 
-class MapTab extends StatefulWidget {
-  const MapTab({super.key});
+class VenueMapView extends StatefulWidget {
+  const VenueMapView({super.key});
 
   @override
-  State<MapTab> createState() => _MapTabState();
+  State<VenueMapView> createState() => _VenueMapViewState();
 }
 
-class _MapTabState extends State<MapTab> {
+class _VenueMapViewState extends State<VenueMapView> {
   @override
   initState() {
     super.initState();

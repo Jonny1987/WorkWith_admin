@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:workwith_admin/tabs/map/edit_venue_popup.dart';
+import 'package:workwith_admin/tabs/edit_tab/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
-class ListPage extends StatefulWidget {
-  const ListPage({Key? key}) : super(key: key);
+class VenueListView extends StatefulWidget {
+  const VenueListView({Key? key}) : super(key: key);
 
   @override
-  _ListPageState createState() => _ListPageState();
+  _VenueListViewState createState() => _VenueListViewState();
 }
 
-class _ListPageState extends State<ListPage> {
+class _VenueListViewState extends State<VenueListView> {
   List<dynamic> _venues = [];
 
   void _updateVenues() async {
