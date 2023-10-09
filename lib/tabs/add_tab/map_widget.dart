@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:workwith_admin/models/place_autocomplete.dart';
 import 'package:workwith_admin/repository/places/places.dart';
+import 'package:workwith_admin/tabs/add_tab/add_venue_popup.dart';
 
 class AddMapWidget extends StatefulWidget {
   final LatLng currentLocation;
@@ -16,8 +17,10 @@ class _AddMapWidgetState extends State<AddMapWidget> {
   Set<Marker> _markers = {};
   late GoogleMapController mapController;
   final TextEditingController _searchController = TextEditingController();
+  FocusNode searchBoxFocusNode = FocusNode();
   final PlacesRepository _placesRepository = PlacesRepository();
   List<PlaceAutocomplete> _predictions = [];
+  dynamic _placeDetails;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -46,23 +49,23 @@ class _AddMapWidgetState extends State<AddMapWidget> {
     }
   }
 
-  void _placeDetails(BuildContext context, String placeId) async {
-    dynamic result = await _placesRepository.placeDetails(placeId);
+  void _selectPlace(String placeId) async {
+    _placeDetails = await _placesRepository.placeDetails(placeId);
     LatLng position = LatLng(
-      result['location']['lat'],
-      result['location']['lng'],
+      _placeDetails['location']['lat'],
+      _placeDetails['location']['lng'],
     );
     setState(() {
       _predictions = [];
       _markers = {
         Marker(
-          markerId: MarkerId(result['placeId']),
+          markerId: MarkerId(_placeDetails['placeId']),
           position: position,
           icon: BitmapDescriptor.defaultMarker,
         )
       };
       _searchController.clear();
-      FocusScope.of(context).unfocus();
+      searchBoxFocusNode.unfocus();
       mapController.animateCamera(CameraUpdate.newCameraPosition(
         CameraPosition(
           target: position,
@@ -96,6 +99,7 @@ class _AddMapWidgetState extends State<AddMapWidget> {
             Padding(
               padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
               child: TextField(
+                focusNode: searchBoxFocusNode,
                 controller: _searchController,
                 onChanged: (value) => searchPlaces(value),
                 decoration: InputDecoration(
@@ -118,14 +122,38 @@ class _AddMapWidgetState extends State<AddMapWidget> {
                   child: ListTile(
                     title: Text(_predictions[index].description),
                     onTap: () {
-                      _placeDetails(context, _predictions[index].placeId);
+                      _selectPlace(_predictions[index].placeId);
                     },
                   ),
                 );
               },
             ),
           ],
-        )
+        ),
+        Visibility(
+            visible: _markers.isNotEmpty && !searchBoxFocusNode.hasFocus,
+            child: Align(
+              alignment: Alignment.bottomCenter,
+              child: Padding(
+                padding: const EdgeInsets.all(30.0),
+                child: ElevatedButton(
+                  style: ButtonStyle(
+                    backgroundColor:
+                        MaterialStateProperty.all<Color>(Colors.black),
+                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                        RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(24.0),
+                    )),
+                  ),
+                  onPressed: () => Navigator.of(context)
+                      .push(AddVenuePopup.route(_placeDetails)),
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Text('Add Venue', style: TextStyle(fontSize: 18)),
+                  ),
+                ),
+              ),
+            )),
       ]),
     );
   }
