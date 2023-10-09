@@ -12,10 +12,10 @@ class EditVenuePopup extends StatefulWidget {
   }
 
   @override
-  _EditVenuePopupState createState() => _EditVenuePopupState();
+  EditVenuePopupState createState() => EditVenuePopupState();
 }
 
-class _EditVenuePopupState extends State<EditVenuePopup> {
+class EditVenuePopupState extends State<EditVenuePopup> {
   late String _name;
   final _internetSpeedController = TextEditingController();
   final _americanoPriceController = TextEditingController();
@@ -116,6 +116,7 @@ class _EditVenuePopupState extends State<EditVenuePopup> {
     }
   }
 
+  @override
   initState() {
     super.initState();
     _getVenue();

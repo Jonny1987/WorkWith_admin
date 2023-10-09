@@ -1,17 +1,17 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:workwith_admin/tabs/edit_tab/edit_venue_popup.dart';
+import 'package:workwith_admin/tabs/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
-class MapWidget extends StatefulWidget {
+class VenuesMapWidget extends StatefulWidget {
   final LatLng currentLocation;
-  const MapWidget({required this.currentLocation});
+  const VenuesMapWidget({super.key, required this.currentLocation});
 
   @override
-  State<MapWidget> createState() => _MapWidgetState();
+  State<VenuesMapWidget> createState() => _VenuesMapWidgetState();
 }
 
-class _MapWidgetState extends State<MapWidget> {
+class _VenuesMapWidgetState extends State<VenuesMapWidget> {
   late GoogleMapController mapController;
 
   List<dynamic> venues = [];
@@ -41,6 +41,7 @@ class _MapWidgetState extends State<MapWidget> {
     });
   }
 
+  @override
   initState() {
     super.initState();
     _createMarkers(widget.currentLocation);
@@ -50,6 +51,12 @@ class _MapWidgetState extends State<MapWidget> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: GoogleMap(
+        buildingsEnabled: false,
+        tiltGesturesEnabled: false,
+        rotateGesturesEnabled: false,
+        mapToolbarEnabled: false,
+        zoomControlsEnabled: false,
+        myLocationEnabled: true,
         markers: _markers.toSet(),
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(

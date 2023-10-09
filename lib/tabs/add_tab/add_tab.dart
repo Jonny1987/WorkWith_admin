@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:workwith_admin/tabs/edit_tab/map_view/map_widget.dart';
+import 'package:workwith_admin/tabs/add_tab/map_widget.dart';
 import 'package:workwith_admin/utils/map.dart';
 
-class VenuesMapView extends StatefulWidget {
-  const VenuesMapView({super.key});
+class AddTab extends StatefulWidget {
+  const AddTab({super.key});
 
   @override
-  State<VenuesMapView> createState() => _VenuesMapViewState();
+  State<AddTab> createState() => _AddTabState();
 }
 
-class _VenuesMapViewState extends State<VenuesMapView> {
+class _AddTabState extends State<AddTab> {
   @override
   initState() {
     super.initState();
@@ -22,7 +22,7 @@ class _VenuesMapViewState extends State<VenuesMapView> {
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.done) {
           if (snapshot.data?.status == LocationServiceStatus.granted) {
-            return VenuesMapWidget(currentLocation: snapshot.data!.location!);
+            return AddMapWidget(currentLocation: snapshot.data!.location!);
           } else if (snapshot.data?.status ==
               LocationServiceStatus.serviceDisabled) {
             return const PermissionMessage(

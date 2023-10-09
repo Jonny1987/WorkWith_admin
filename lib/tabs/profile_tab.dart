@@ -3,18 +3,18 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:workwith_admin/pages/login_page.dart';
 import 'package:workwith_admin/utils/constants.dart';
 
-class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+class ProfileTab extends StatefulWidget {
+  const ProfileTab({super.key});
 
   static Route<void> route() {
-    return MaterialPageRoute(builder: (context) => const ProfilePage());
+    return MaterialPageRoute(builder: (context) => const ProfileTab());
   }
 
   @override
-  _ProfilePageState createState() => _ProfilePageState();
+  _ProfileTabState createState() => _ProfileTabState();
 }
 
-class _ProfilePageState extends State<ProfilePage> {
+class _ProfileTabState extends State<ProfileTab> {
   Future<void> _signOut() async {
     try {
       await supabase.auth.signOut();

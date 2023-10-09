@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:workwith_admin/tabs/edit_tab/edit_venue_popup.dart';
+import 'package:workwith_admin/tabs/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
 class VenueListView extends StatefulWidget {
   const VenueListView({Key? key}) : super(key: key);
 
   @override
-  _VenueListViewState createState() => _VenueListViewState();
+  VenueListViewState createState() => VenueListViewState();
 }
 
-class _VenueListViewState extends State<VenueListView> {
+class VenueListViewState extends State<VenueListView> {
   List<dynamic> _venues = [];
 
   void _updateVenues() async {
@@ -31,11 +31,13 @@ class _VenueListViewState extends State<VenueListView> {
         body: ListView.builder(
             itemCount: _venues.length,
             itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(_venues[index]['name']),
-                trailing: const Icon(Icons.arrow_forward),
-                onTap: () => Navigator.of(context)
-                    .push(EditVenuePopup.route(_venues[index]['id'])),
+              return Card(
+                child: ListTile(
+                  title: Text(_venues[index]['name']),
+                  trailing: const Icon(Icons.arrow_forward),
+                  onTap: () => Navigator.of(context)
+                      .push(EditVenuePopup.route(_venues[index]['id'])),
+                ),
               );
             }));
   }

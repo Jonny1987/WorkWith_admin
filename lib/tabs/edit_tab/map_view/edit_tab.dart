@@ -6,18 +6,18 @@ class EditTab extends StatefulWidget {
   const EditTab({Key? key}) : super(key: key);
 
   @override
-  _EditTabState createState() => _EditTabState();
+  EditTabState createState() => EditTabState();
 }
 
-class _EditTabState extends State<EditTab> {
-  final Widget _map_view = const VenueMapView();
-  final Widget _list_view = const VenueListView();
+class EditTabState extends State<EditTab> with AutomaticKeepAliveClientMixin {
+  final Widget _mapView = const VenuesMapView();
+  final Widget _listView = const VenueListView();
   late Widget _currentView;
   late String _otherViewName;
 
   void _changeView() {
     setState(() {
-      _currentView = _currentView == _map_view ? _list_view : _map_view;
+      _currentView = _currentView == _mapView ? _listView : _mapView;
       _otherViewName = _otherViewName == 'Map' ? 'List' : 'Map';
     });
   }
@@ -25,7 +25,7 @@ class _EditTabState extends State<EditTab> {
   @override
   void initState() {
     super.initState();
-    _currentView = _map_view;
+    _currentView = _mapView;
     _otherViewName = 'List';
   }
 
@@ -53,14 +53,14 @@ class _EditTabState extends State<EditTab> {
                   Padding(
                     padding: const EdgeInsets.all(6.0),
                     child: Icon(
-                      _currentView == _map_view ? Icons.list : Icons.map,
+                      _currentView == _mapView ? Icons.list : Icons.map,
                       size: 24,
                     ),
                   ),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(7, 14, 14, 14),
                     child: Text('Show $_otherViewName',
-                        style: TextStyle(fontSize: 18)),
+                        style: const TextStyle(fontSize: 18)),
                   ),
                 ],
               )),
@@ -68,4 +68,7 @@ class _EditTabState extends State<EditTab> {
       ],
     ));
   }
+
+  @override
+  bool get wantKeepAlive => true;
 }

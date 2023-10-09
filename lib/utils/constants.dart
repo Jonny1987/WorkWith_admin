@@ -110,8 +110,8 @@ class TransparentBackButtonAppBar extends StatelessWidget
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight); // This is the default AppBar height
+  Size get preferredSize => const Size.fromHeight(
+      kToolbarHeight); // This is the default AppBar height
 }
 
 class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
@@ -126,8 +126,8 @@ class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 
   @override
-  Size get preferredSize =>
-      Size.fromHeight(kToolbarHeight); // This is the default AppBar height
+  Size get preferredSize => const Size.fromHeight(
+      kToolbarHeight); // This is the default AppBar height
 }
 
 
