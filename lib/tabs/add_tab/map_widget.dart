@@ -77,84 +77,82 @@ class _AddMapWidgetState extends State<AddMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Stack(children: [
-        GoogleMap(
-          markers: _markers,
-          buildingsEnabled: false,
-          tiltGesturesEnabled: false,
-          rotateGesturesEnabled: false,
-          mapToolbarEnabled: false,
-          zoomControlsEnabled: false,
-          myLocationEnabled: true,
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: widget.currentLocation,
-            zoom: 15,
+    return Stack(children: [
+      GoogleMap(
+        markers: _markers,
+        buildingsEnabled: false,
+        tiltGesturesEnabled: false,
+        rotateGesturesEnabled: false,
+        mapToolbarEnabled: false,
+        zoomControlsEnabled: false,
+        myLocationEnabled: true,
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: widget.currentLocation,
+          zoom: 15,
+        ),
+        myLocationButtonEnabled: true,
+      ),
+      Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+            child: TextField(
+              focusNode: searchBoxFocusNode,
+              controller: _searchController,
+              onChanged: (value) => searchPlaces(value),
+              decoration: InputDecoration(
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(30.0),
+                ),
+                filled: true,
+                hintStyle: TextStyle(color: Colors.grey[800]),
+                hintText: "Search for a hotel, cafe, resturant, etc.",
+                fillColor: Colors.white,
+              ),
+            ),
           ),
-          myLocationButtonEnabled: true,
-        ),
-        Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
-              child: TextField(
-                focusNode: searchBoxFocusNode,
-                controller: _searchController,
-                onChanged: (value) => searchPlaces(value),
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(30.0),
-                  ),
-                  filled: true,
-                  hintStyle: TextStyle(color: Colors.grey[800]),
-                  hintText: "Search for a hotel, cafe, resturant, etc.",
-                  fillColor: Colors.white70,
+          ListView.builder(
+            shrinkWrap: true,
+            itemCount: _predictions.length,
+            itemBuilder: (context, index) {
+              return Container(
+                color: Colors.white,
+                child: ListTile(
+                  title: Text(_predictions[index].description),
+                  onTap: () {
+                    _selectPlace(_predictions[index].placeId);
+                  },
+                ),
+              );
+            },
+          ),
+        ],
+      ),
+      Visibility(
+          visible: _markers.isNotEmpty && !searchBoxFocusNode.hasFocus,
+          child: Align(
+            alignment: Alignment.bottomCenter,
+            child: Padding(
+              padding: const EdgeInsets.all(30.0),
+              child: ElevatedButton(
+                style: ButtonStyle(
+                  backgroundColor:
+                      MaterialStateProperty.all<Color>(Colors.black),
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(24.0),
+                  )),
+                ),
+                onPressed: () => Navigator.of(context)
+                    .push(AddVenuePopup.route(_placeDetails)),
+                child: const Padding(
+                  padding: EdgeInsets.all(10.0),
+                  child: Text('Add Venue', style: TextStyle(fontSize: 18)),
                 ),
               ),
             ),
-            ListView.builder(
-              shrinkWrap: true,
-              itemCount: _predictions.length,
-              itemBuilder: (context, index) {
-                return Container(
-                  color: Colors.white,
-                  child: ListTile(
-                    title: Text(_predictions[index].description),
-                    onTap: () {
-                      _selectPlace(_predictions[index].placeId);
-                    },
-                  ),
-                );
-              },
-            ),
-          ],
-        ),
-        Visibility(
-            visible: _markers.isNotEmpty && !searchBoxFocusNode.hasFocus,
-            child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.all(30.0),
-                child: ElevatedButton(
-                  style: ButtonStyle(
-                    backgroundColor:
-                        MaterialStateProperty.all<Color>(Colors.black),
-                    shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                        RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(24.0),
-                    )),
-                  ),
-                  onPressed: () => Navigator.of(context)
-                      .push(AddVenuePopup.route(_placeDetails)),
-                  child: const Padding(
-                    padding: EdgeInsets.all(10.0),
-                    child: Text('Add Venue', style: TextStyle(fontSize: 18)),
-                  ),
-                ),
-              ),
-            )),
-      ]),
-    );
+          )),
+    ]);
   }
 }

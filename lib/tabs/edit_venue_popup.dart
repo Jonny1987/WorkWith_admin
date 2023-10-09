@@ -16,12 +16,16 @@ class EditVenuePopup extends StatefulWidget {
 }
 
 class EditVenuePopupState extends State<EditVenuePopup> {
-  late String _name;
+  String _name = '';
   final _internetSpeedController = TextEditingController();
   final _americanoPriceController = TextEditingController();
   final _seatsWithSocketsController = TextEditingController();
 
   var _loading = true;
+
+  String asString(dynamic) {
+    return dynamic != null ? dynamic.toString() : '';
+  }
 
   Future<void> _getVenue() async {
     setState(() {
@@ -34,12 +38,10 @@ class EditVenuePopupState extends State<EditVenuePopup> {
           .select<Map<String, dynamic>>()
           .eq('id', widget.venueId)
           .single();
-      _name = (data['name'] ?? '') as String;
-      _internetSpeedController.text = (data['internet_speed'] ?? '') as String;
-      _americanoPriceController.text =
-          (data['americano_price'] ?? '') as String;
-      _seatsWithSocketsController.text =
-          (data['seats_with_sockets'] ?? '') as String;
+      _name = data['name'];
+      _internetSpeedController.text = asString(data['internet_speed']);
+      _americanoPriceController.text = asString(data['americano_price']);
+      _seatsWithSocketsController.text = asString(data['seats_with_sockets']);
     } on PostgrestException catch (error) {
       SnackBar(
         content: Text(error.message),

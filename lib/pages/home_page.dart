@@ -19,10 +19,17 @@ class _HomePageState extends State<HomePage> {
   int _selectedIndex = 0;
   final List<Widget> _pages = const [EditTab(), AddTab(), ProfileTab()];
 
+  static const TextStyle gButtonStyle = TextStyle(
+    fontSize: 16,
+    color: Colors.white,
+    fontWeight: FontWeight.bold,
+  );
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
             child: IndexedStack(index: _selectedIndex, children: _pages)),
         bottomNavigationBar: Container(
@@ -43,9 +50,21 @@ class _HomePageState extends State<HomePage> {
               gap: 8,
               padding: EdgeInsets.all(16),
               tabs: const [
-                GButton(icon: Icons.map, text: 'Edit'),
-                GButton(icon: Icons.map, text: 'Add'),
-                GButton(icon: Icons.person, text: 'Profile'),
+                GButton(
+                  icon: Icons.edit,
+                  text: 'Edit',
+                  textStyle: gButtonStyle,
+                ),
+                GButton(
+                  icon: Icons.add_box_rounded,
+                  text: 'Add',
+                  textStyle: gButtonStyle,
+                ),
+                GButton(
+                  icon: Icons.person,
+                  text: 'Profile',
+                  textStyle: gButtonStyle,
+                ),
               ],
             ),
           ),

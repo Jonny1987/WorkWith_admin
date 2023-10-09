@@ -31,8 +31,7 @@ class EditTabState extends State<EditTab> with AutomaticKeepAliveClientMixin {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        body: Stack(
+    return Stack(
       alignment: Alignment.bottomCenter,
       children: [
         _currentView,
@@ -66,7 +65,7 @@ class EditTabState extends State<EditTab> with AutomaticKeepAliveClientMixin {
               )),
         ),
       ],
-    ));
+    );
   }
 
   @override

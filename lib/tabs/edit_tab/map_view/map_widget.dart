@@ -49,22 +49,20 @@ class _VenuesMapWidgetState extends State<VenuesMapWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: GoogleMap(
-        buildingsEnabled: false,
-        tiltGesturesEnabled: false,
-        rotateGesturesEnabled: false,
-        mapToolbarEnabled: false,
-        zoomControlsEnabled: false,
-        myLocationEnabled: true,
-        markers: _markers.toSet(),
-        onMapCreated: _onMapCreated,
-        initialCameraPosition: CameraPosition(
-          target: widget.currentLocation,
-          zoom: 15,
-        ),
-        myLocationButtonEnabled: true,
+    return GoogleMap(
+      buildingsEnabled: false,
+      tiltGesturesEnabled: false,
+      rotateGesturesEnabled: false,
+      mapToolbarEnabled: false,
+      zoomControlsEnabled: false,
+      myLocationEnabled: true,
+      markers: _markers.toSet(),
+      onMapCreated: _onMapCreated,
+      initialCameraPosition: CameraPosition(
+        target: widget.currentLocation,
+        zoom: 15,
       ),
+      myLocationButtonEnabled: true,
     );
   }
 }

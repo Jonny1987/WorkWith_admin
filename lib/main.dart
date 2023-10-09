@@ -1,12 +1,24 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:google_maps_flutter_android/google_maps_flutter_android.dart';
+import 'package:google_maps_flutter_platform_interface/google_maps_flutter_platform_interface.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:workwith_admin/pages/splash_page.dart';
 import 'package:workwith_admin/utils/constants.dart';
 
-Future<void> main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+Future<void> setGoogleMapsRenderer() async {
+  AndroidMapRenderer mapRenderer = AndroidMapRenderer.platformDefault;
+  final GoogleMapsFlutterPlatform mapsImplementation =
+      GoogleMapsFlutterPlatform.instance;
+  if (mapsImplementation is GoogleMapsFlutterAndroid) {
+    WidgetsFlutterBinding.ensureInitialized();
+    mapRenderer = await mapsImplementation
+        .initializeWithRenderer(AndroidMapRenderer.latest);
+  }
+}
 
+Future<void> main() async {
+  await setGoogleMapsRenderer();
   await Supabase.initialize(
     url: 'https://deyrvouslmxlaqisulmo.supabase.co',
     anonKey:
