@@ -15,12 +15,13 @@ class AddMapWidget extends StatefulWidget {
 class _AddMapWidgetState extends State<AddMapWidget> {
   CameraPosition? cameraPosition;
   Set<Marker> _markers = {};
-  late GoogleMapController mapController;
   final TextEditingController _searchController = TextEditingController();
   FocusNode searchBoxFocusNode = FocusNode();
   final PlacesRepository _placesRepository = PlacesRepository();
   List<PlaceAutocomplete> _predictions = [];
   dynamic _placeDetails;
+
+  late GoogleMapController mapController;
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;

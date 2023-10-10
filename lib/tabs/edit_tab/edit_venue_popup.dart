@@ -152,6 +152,14 @@ class EditVenuePopupState extends State<EditVenuePopup> {
     await _upsertVenueNotes();
   }
 
+  void dispose() {
+    _internetSpeedController.dispose();
+    _americanoPriceController.dispose();
+    _seatsWithSocketsController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
   @override
   initState() {
     super.initState();

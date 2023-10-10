@@ -102,7 +102,17 @@ class AddVenuePopupState extends State<AddVenuePopup> {
   }
 
   @override
-  initState() {
+  void dispose() {
+    _venueNameController.dispose();
+    _internetSpeedController.dispose();
+    _americanoPriceController.dispose();
+    _seatsWithSocketsController.dispose();
+    _notesController.dispose();
+    super.dispose();
+  }
+
+  @override
+  void initState() {
     super.initState();
     _venueNameController.text = widget.placeDetails['name'];
   }

@@ -14,12 +14,11 @@ class VenuesMapWidget extends StatefulWidget {
 class _VenuesMapWidgetState extends State<VenuesMapWidget> {
   late GoogleMapController mapController;
 
-  List<dynamic> venues = [];
-
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
   }
 
+  List<dynamic> venues = [];
   Set<Marker> _markers = {};
 
   void _createMarkers(currentLocation) async {
