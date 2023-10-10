@@ -20,6 +20,7 @@ class AddVenuePopupState extends State<AddVenuePopup> {
   final _internetSpeedController = TextEditingController();
   final _americanoPriceController = TextEditingController();
   final _seatsWithSocketsController = TextEditingController();
+  bool _enabled = true;
 
   var _loading = false;
 
@@ -30,19 +31,20 @@ class AddVenuePopupState extends State<AddVenuePopup> {
     final seatsWithSockets = _seatsWithSocketsController.text.trim();
     final long = widget.placeDetails['location']['lng'];
     final lat = widget.placeDetails['location']['lat'];
-    print('type of long: ${long.runtimeType}');
 
     Map<String, dynamic> namesToValues = {
       'name': name,
       'internet_speed': internetSpeed,
       'americano_price': americanoPrice,
       'seats_with_sockets': seatsWithSockets,
+      'enabled': _enabled,
       'longitude': long,
       'latitude': lat,
+      'google_maps_place_id': widget.placeDetails['placeId'],
     };
     final Map<String, dynamic> inserts = {};
     namesToValues.forEach((name, value) {
-      if (value != '') {
+      if (value != '' && value != null) {
         inserts[name] = value;
       }
     });
@@ -125,6 +127,19 @@ class AddVenuePopupState extends State<AddVenuePopup> {
                     labelText: 'Seats with Sockets',
                   ),
                 ),
+                const SizedBox(height: 16),
+                Row(children: [
+                  Text(
+                    'Enabled:',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Switch(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: _enabled,
+                      onChanged: (value) {
+                        setState(() => _enabled = value);
+                      }),
+                ]),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _loading ? null : _addVenue,

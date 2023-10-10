@@ -20,6 +20,7 @@ class EditVenuePopupState extends State<EditVenuePopup> {
   final _internetSpeedController = TextEditingController();
   final _americanoPriceController = TextEditingController();
   final _seatsWithSocketsController = TextEditingController();
+  bool _enabled = true;
 
   var _loading = true;
 
@@ -42,6 +43,7 @@ class EditVenuePopupState extends State<EditVenuePopup> {
       _internetSpeedController.text = asString(data['internet_speed']);
       _americanoPriceController.text = asString(data['americano_price']);
       _seatsWithSocketsController.text = asString(data['seats_with_sockets']);
+      _enabled = data['enabled'];
     } on PostgrestException catch (error) {
       SnackBar(
         content: Text(error.message),
@@ -66,17 +68,17 @@ class EditVenuePopupState extends State<EditVenuePopup> {
     final internetSpeed = _internetSpeedController.text.trim();
     final americanoPrice = _americanoPriceController.text.trim();
     final seatsWithSockets = _seatsWithSocketsController.text.trim();
-    Map<String, String?> namesToValues = {
+    Map<String, dynamic?> namesToValues = {
       'internet_speed': internetSpeed,
       'americano_price': americanoPrice,
       'seats_with_sockets': seatsWithSockets,
+      'enabled': _enabled,
     };
     final updates = {};
     namesToValues.forEach((name, value) {
-      if (value == '') {
-        value = null;
+      if (value != '' && value != null) {
+        updates[name] = value;
       }
-      updates[name] = value;
     });
     if (updates.isEmpty) {
       return;
@@ -156,6 +158,19 @@ class EditVenuePopupState extends State<EditVenuePopup> {
                     labelText: 'Seats with Sockets',
                   ),
                 ),
+                const SizedBox(height: 16),
+                Row(children: [
+                  Text(
+                    'Enabled:',
+                    style: TextStyle(fontSize: 18),
+                  ),
+                  Switch(
+                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                      value: _enabled,
+                      onChanged: (value) {
+                        setState(() => _enabled = value);
+                      }),
+                ]),
                 const SizedBox(height: 16),
                 ElevatedButton(
                   onPressed: _loading ? null : _updateVenue,
