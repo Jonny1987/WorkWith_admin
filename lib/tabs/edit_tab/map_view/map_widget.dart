@@ -20,10 +20,11 @@ class _VenuesMapWidgetState extends State<VenuesMapWidget> {
     mapController = controller;
   }
 
-  List<Marker> _markers = [];
+  Set<Marker> _markers = {};
 
   void _createMarkers(currentLocation) async {
     final venues = await getVenues(currentLocation);
+    print('venues: $venues');
     final markers = venues.map((venue) {
       return Marker(
         markerId: MarkerId(venue['id'].toString()),
@@ -35,7 +36,8 @@ class _VenuesMapWidgetState extends State<VenuesMapWidget> {
         ),
         icon: BitmapDescriptor.defaultMarker,
       );
-    }).toList();
+    }).toSet();
+    print('markers: $markers');
     setState(() {
       _markers = markers;
     });
@@ -56,7 +58,7 @@ class _VenuesMapWidgetState extends State<VenuesMapWidget> {
       mapToolbarEnabled: false,
       zoomControlsEnabled: false,
       myLocationEnabled: true,
-      markers: _markers.toSet(),
+      markers: _markers,
       onMapCreated: _onMapCreated,
       initialCameraPosition: CameraPosition(
         target: widget.currentLocation,
