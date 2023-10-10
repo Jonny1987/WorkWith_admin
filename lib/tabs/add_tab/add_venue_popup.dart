@@ -20,9 +20,46 @@ class AddVenuePopupState extends State<AddVenuePopup> {
   final _internetSpeedController = TextEditingController();
   final _americanoPriceController = TextEditingController();
   final _seatsWithSocketsController = TextEditingController();
+  final _notesController = TextEditingController();
   bool _enabled = true;
 
   var _loading = false;
+
+  Future<int?> _insertVenue(Map<String, dynamic> inserts) async {
+    setState(() {
+      _loading = true;
+    });
+    print('inserts: $inserts');
+    try {
+      final int newVenueId =
+          await supabase.rpc('insert_venue', params: inserts);
+      print('newVenueId: $newVenueId');
+      if (mounted) {
+        const SnackBar(
+          content: Text('Successfully added venue!'),
+        );
+      }
+      return newVenueId;
+    } on PostgrestException catch (error) {
+      print(error.message);
+      SnackBar(
+        content: Text(error.message),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } catch (error) {
+      print('Unexpected error occurred');
+      SnackBar(
+        content: const Text('Unexpected error occurred'),
+        backgroundColor: Theme.of(context).colorScheme.error,
+      );
+    } finally {
+      if (mounted) {
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
+  }
 
   Future<void> _addVenue() async {
     final name = _venueNameController.text.trim();
@@ -31,6 +68,7 @@ class AddVenuePopupState extends State<AddVenuePopup> {
     final seatsWithSockets = _seatsWithSocketsController.text.trim();
     final long = widget.placeDetails['location']['lng'];
     final lat = widget.placeDetails['location']['lat'];
+    final notes = _notesController.text.trim();
 
     Map<String, dynamic> namesToValues = {
       'name': name,
@@ -51,36 +89,15 @@ class AddVenuePopupState extends State<AddVenuePopup> {
     if (inserts.isEmpty) {
       return;
     }
-    setState(() {
-      _loading = true;
-    });
-    print('inserts: $inserts');
-    try {
-      final res = await supabase.rpc('insert_venue', params: inserts);
-      print('res: $res');
-      if (mounted) {
-        const SnackBar(
-          content: Text('Successfully added venue!'),
-        );
-      }
-    } on PostgrestException catch (error) {
-      print(error.message);
-      SnackBar(
-        content: Text(error.message),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      );
-    } catch (error) {
-      print('Unexpected error occurred');
-      SnackBar(
-        content: const Text('Unexpected error occurred'),
-        backgroundColor: Theme.of(context).colorScheme.error,
-      );
-    } finally {
-      if (mounted) {
-        setState(() {
-          _loading = false;
-        });
-      }
+    final int? newVenueId = await _insertVenue(inserts);
+    if (notes != '') {
+      Map<String, dynamic> inserts = {
+        'venue_id': newVenueId,
+        'notes': notes,
+      };
+      print('inserting notes: $inserts');
+      dynamic res = await supabase.rpc('upsert_venue_notes', params: inserts);
+      print('res venue_notes: $res');
     }
   }
 
@@ -128,8 +145,17 @@ class AddVenuePopupState extends State<AddVenuePopup> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                TextFormField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  controller: _notesController,
+                  decoration: const InputDecoration(
+                    labelText: 'Notes',
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(children: [
-                  Text(
+                  const Text(
                     'Enabled:',
                     style: TextStyle(fontSize: 18),
                   ),

@@ -20,6 +20,8 @@ class EditVenuePopupState extends State<EditVenuePopup> {
   final _internetSpeedController = TextEditingController();
   final _americanoPriceController = TextEditingController();
   final _seatsWithSocketsController = TextEditingController();
+  final _notesController = TextEditingController();
+  int _notesId = -1;
   bool _enabled = true;
 
   var _loading = true;
@@ -36,7 +38,7 @@ class EditVenuePopupState extends State<EditVenuePopup> {
     try {
       final data = await supabase
           .from('venues')
-          .select<Map<String, dynamic>>()
+          .select<Map<String, dynamic>>('*, venue_notes(notes)')
           .eq('id', widget.venueId)
           .single();
       _name = data['name'];
@@ -44,6 +46,10 @@ class EditVenuePopupState extends State<EditVenuePopup> {
       _americanoPriceController.text = asString(data['americano_price']);
       _seatsWithSocketsController.text = asString(data['seats_with_sockets']);
       _enabled = data['enabled'];
+      if (data['venue_notes'] != null) {
+        _notesController.text = asString(data['venue_notes']['notes']);
+        _notesId = data['venue_notes']['id'];
+      }
     } on PostgrestException catch (error) {
       SnackBar(
         content: Text(error.message),
@@ -63,40 +69,19 @@ class EditVenuePopupState extends State<EditVenuePopup> {
     }
   }
 
-  /// Called when user taps `Update` button
-  Future<void> _updateVenue() async {
-    final internetSpeed = _internetSpeedController.text.trim();
-    final americanoPrice = _americanoPriceController.text.trim();
-    final seatsWithSockets = _seatsWithSocketsController.text.trim();
-    Map<String, dynamic?> namesToValues = {
-      'internet_speed': internetSpeed,
-      'americano_price': americanoPrice,
-      'seats_with_sockets': seatsWithSockets,
-      'enabled': _enabled,
-    };
-    final updates = {};
-    namesToValues.forEach((name, value) {
-      if (value != '' && value != null) {
-        updates[name] = value;
-      }
-    });
-    if (updates.isEmpty) {
-      return;
-    }
+  Future<void> _updateTable(Map<String, dynamic> updates, String table,
+      Map<String, dynamic> match) async {
     setState(() {
       _loading = true;
     });
     updates['updated_at'] = DateTime.now().toIso8601String();
     print('updates: $updates');
     try {
-      final res = await supabase
-          .from('venues')
-          .update(updates)
-          .match({'id': widget.venueId});
-      print('res: $res');
+      final res = await supabase.from(table).update(updates).match(match);
+      print('res $table: $res');
       if (mounted) {
-        const SnackBar(
-          content: Text('Successfully updated venue!'),
+        SnackBar(
+          content: Text('Successfully updated $table!'),
         );
       }
     } on PostgrestException catch (error) {
@@ -118,6 +103,53 @@ class EditVenuePopupState extends State<EditVenuePopup> {
         });
       }
     }
+  }
+
+  Map<String, dynamic> _createUpdates(Map<String, dynamic> namesToValues) {
+    final Map<String, dynamic> updates = {};
+    namesToValues.forEach((name, value) {
+      if (value == '') {
+        value = null;
+      }
+      updates[name] = value;
+    });
+    return updates;
+  }
+
+  /// Called when user taps `Update` button
+  Future<void> _updateVenue() async {
+    final internetSpeed = _internetSpeedController.text.trim();
+    final americanoPrice = _americanoPriceController.text.trim();
+    final seatsWithSockets = _seatsWithSocketsController.text.trim();
+    Map<String, dynamic> namesToValues = {
+      'internet_speed': internetSpeed,
+      'americano_price': americanoPrice,
+      'seats_with_sockets': seatsWithSockets,
+      'enabled': _enabled,
+    };
+    final Map<String, dynamic> updates = _createUpdates(namesToValues);
+    if (updates.isEmpty) {
+      return;
+    }
+    _updateTable(updates, 'venues', {'id': widget.venueId});
+  }
+
+  /// Called when user taps `Update` button
+  Future<void> _upsertVenueNotes() async {
+    String notes = _notesController.text.trim();
+    if (notes == '') {
+      return;
+    }
+    Map<String, dynamic> updates = {
+      'venue_id': widget.venueId,
+      'notes': notes,
+    };
+    await supabase.rpc('upsert_venue_notes', params: updates);
+  }
+
+  Future<void> _update() async {
+    await _updateVenue();
+    await _upsertVenueNotes();
   }
 
   @override
@@ -159,6 +191,15 @@ class EditVenuePopupState extends State<EditVenuePopup> {
                   ),
                 ),
                 const SizedBox(height: 16),
+                TextFormField(
+                  maxLines: null,
+                  keyboardType: TextInputType.multiline,
+                  controller: _notesController,
+                  decoration: const InputDecoration(
+                    labelText: 'Notes',
+                  ),
+                ),
+                const SizedBox(height: 16),
                 Row(children: [
                   Text(
                     'Enabled:',
@@ -173,7 +214,7 @@ class EditVenuePopupState extends State<EditVenuePopup> {
                 ]),
                 const SizedBox(height: 16),
                 ElevatedButton(
-                  onPressed: _loading ? null : _updateVenue,
+                  onPressed: _loading ? null : _update,
                   child: Text(_loading ? 'Saving...' : 'Save'),
                 ),
               ],
