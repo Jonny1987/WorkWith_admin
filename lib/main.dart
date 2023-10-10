@@ -18,7 +18,8 @@ Future<void> setGoogleMapsRenderer() async {
 }
 
 Future<void> main() async {
-  await setGoogleMapsRenderer();
+  // await setGoogleMapsRenderer();
+  WidgetsFlutterBinding.ensureInitialized();
   await Supabase.initialize(
     url: 'https://deyrvouslmxlaqisulmo.supabase.co',
     anonKey:
