@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:workwith_admin/tabs/edit_venue_popup.dart';
+import 'package:workwith_admin/tabs/edit_tab/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
 class VenueListView extends StatefulWidget {

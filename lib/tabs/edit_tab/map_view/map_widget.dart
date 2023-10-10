@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:workwith_admin/tabs/edit_venue_popup.dart';
+import 'package:workwith_admin/tabs/edit_tab/edit_venue_popup.dart';
 import 'package:workwith_admin/utils/map.dart';
 
 class VenuesMapWidget extends StatefulWidget {

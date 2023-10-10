@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_nav_bar/google_nav_bar.dart';
 import 'package:workwith_admin/tabs/add_tab/add_tab.dart';
-import 'package:workwith_admin/tabs/edit_tab/map_view/edit_tab.dart';
+import 'package:workwith_admin/tabs/edit_tab/edit_tab.dart';
 import 'package:workwith_admin/tabs/profile_tab.dart';
 
 class HomePage extends StatefulWidget {
