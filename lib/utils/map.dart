@@ -22,6 +22,7 @@ Future<LocationResult> getCurrentLocation() async {
 
   // Check if location services are enabled.
   serviceEnabled = await Geolocator.isLocationServiceEnabled();
+  print('****** serviceEnabled: $serviceEnabled');
   if (!serviceEnabled) {
     return LocationResult(
         location: null, status: LocationServiceStatus.serviceDisabled);
@@ -29,7 +30,9 @@ Future<LocationResult> getCurrentLocation() async {
 
   permission = await Geolocator.checkPermission();
   if (permission == LocationPermission.denied) {
+    print('****** location permission: $permission');
     permission = await Geolocator.requestPermission();
+    print('*********** perission requested');
     if (permission == LocationPermission.denied) {
       return LocationResult(
           location: null, status: LocationServiceStatus.permissionDenied);
