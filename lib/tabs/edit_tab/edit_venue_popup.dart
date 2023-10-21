@@ -200,6 +200,7 @@ class EditVenuePopupState extends State<EditVenuePopup> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   controller: _notesController,
@@ -209,7 +210,7 @@ class EditVenuePopupState extends State<EditVenuePopup> {
                 ),
                 const SizedBox(height: 16),
                 Row(children: [
-                  Text(
+                  const Text(
                     'Enabled:',
                     style: TextStyle(fontSize: 18),
                   ),

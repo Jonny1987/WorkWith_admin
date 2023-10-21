@@ -156,6 +156,7 @@ class AddVenuePopupState extends State<AddVenuePopup> {
                 ),
                 const SizedBox(height: 16),
                 TextFormField(
+                  textCapitalization: TextCapitalization.sentences,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   controller: _notesController,
