@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:workwith_admin/utils/top_snack_bar.dart';
 
 /// Supabase client
 final supabase = Supabase.instance.client;
@@ -63,57 +64,6 @@ final appTheme = ThemeData.light().copyWith(
   ),
 );
 
-/// Set of extension methods to easily display a snackbar
-extension ShowSnackBar on BuildContext {
-  /// Displays a basic snackbar
-  void showSnackBar({
-    required String message,
-    Color backgroundColor = Colors.white,
-  }) {
-    ScaffoldMessenger.of(this).showSnackBar(SnackBar(
-      content: Text(message),
-      backgroundColor: backgroundColor,
-    ));
-  }
-
-  /// Displays a red snackbar indicating error
-  void showErrorSnackBar({required String message}) {
-    showSnackBar(message: message, backgroundColor: Colors.red);
-  }
-}
-
-class TransparentBackButtonAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  const TransparentBackButtonAppBar({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      backgroundColor: Colors.transparent,
-      elevation: 0,
-      automaticallyImplyLeading: false,
-      leadingWidth: 100,
-      leading: ElevatedButton.icon(
-        onPressed: () => Navigator.of(context).pop(),
-        icon: const Icon(
-          Icons.arrow_back,
-          color: Colors.black,
-        ),
-        label: const Text('Back',
-            style: TextStyle(color: Colors.black, fontSize: 16)),
-        style: ElevatedButton.styleFrom(
-          elevation: 0,
-          backgroundColor: Colors.transparent,
-        ),
-      ),
-    );
-  }
-
-  @override
-  Size get preferredSize => const Size.fromHeight(
-      kToolbarHeight); // This is the default AppBar height
-}
-
 class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
   const TransparentAppBar({Key? key}) : super(key: key);
 
@@ -130,18 +80,54 @@ class TransparentAppBar extends StatelessWidget implements PreferredSizeWidget {
       kToolbarHeight); // This is the default AppBar height
 }
 
+void showTopSnackBar(BuildContext context, String text, Color color) {
+  OverlayEntry overlayEntry = OverlayEntry(
+    builder: (context) => SafeArea(
+      child: IgnorePointer(
+        child: Material(
+          color: Colors.transparent,
+          child: Column(
+            // Wrap your TopSnackBar inside a Column
+            mainAxisSize: MainAxisSize.min, // Use as little space as needed
+            children: <Widget>[
+              TopSnackbar(
+                  color: color, text: text), // Use the created TopSnackBar
+            ],
+          ),
+        ),
+      ),
+    ),
+  );
 
-// class Constants extends StatelessWidget {
-// const Constants({ Key? key }) : super(key: key);
+  Overlay.of(context).insert(overlayEntry);
 
-//   @override
-//   Widget build(BuildContext context){
-//     return ElevatedButton(
-//       onPressed: _isLoading ? null : _signUp,
-//       child: Padding(
-//         padding: const EdgeInsets.all(10.0),
-//         child: const Text('Register', style: TextStyle(fontSize: 20)),
-//       ),
-//     ),
-//   }
-// }
+  // The overlay will be displayed for 3 seconds
+  Future.delayed(const Duration(seconds: 5), () {
+    overlayEntry.remove();
+  });
+}
+
+Color errorColor = Colors.red;
+Color successColor = Colors.green;
+
+/// Set of extension methods to easily display a snackbar
+extension ShowSnackBar on BuildContext {
+  void showError(
+      BuildContext context, dynamic exception, StackTrace stackTrace) {
+    debugPrint("$exception,\n$stackTrace");
+    showTopSnackBar(
+      context,
+      exception.toString(),
+      errorColor,
+    );
+  }
+
+  void showSuccessMessage(BuildContext context, String message) {
+    debugPrint(message);
+    showTopSnackBar(
+      context,
+      message,
+      successColor,
+    );
+  }
+}
