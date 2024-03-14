@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:workwith_admin/src/features/add_venue/domain/venue_image_model.dart';
 
 class Venue {
   final int id;
@@ -6,7 +7,7 @@ class Venue {
   final int? internetSpeed;
   final double? americanoPrice;
   final int? seatsWithSockets;
-  final List<String>? imagePaths;
+  final List<VenueImage>? venueImages;
   final double lat;
   final double long;
   final bool enabled;
@@ -18,7 +19,7 @@ class Venue {
     required this.internetSpeed,
     required this.americanoPrice,
     required this.seatsWithSockets,
-    required this.imagePaths,
+    required this.venueImages,
     required this.lat,
     required this.long,
     required this.enabled,
@@ -32,8 +33,11 @@ class Venue {
       internetSpeed: map['internet_speed'],
       americanoPrice: map['americano_price']?.toDouble(),
       seatsWithSockets: map['seats_with_sockets'],
-      imagePaths: map['image_paths'] != null
-          ? List<String>.from(map['image_paths'])
+      venueImages: map['venue_images'] != null
+          ? [
+              for (var venueImageMap in map['venue_images'])
+                VenueImage.fromMap(venueImageMap)
+            ]
           : null,
       lat: map['lat'],
       long: map['long'],
@@ -48,7 +52,7 @@ class Venue {
     int? internetSpeed,
     double? americanoPrice,
     int? seatsWithSockets,
-    List<String>? imagePaths,
+    List<VenueImage>? venueImages,
     double? lat,
     double? long,
     bool? enabled,
@@ -60,7 +64,7 @@ class Venue {
       internetSpeed: internetSpeed ?? this.internetSpeed,
       americanoPrice: americanoPrice ?? this.americanoPrice,
       seatsWithSockets: seatsWithSockets ?? this.seatsWithSockets,
-      imagePaths: imagePaths ?? this.imagePaths,
+      venueImages: venueImages ?? this.venueImages,
       lat: lat ?? this.lat,
       long: long ?? this.long,
       enabled: enabled ?? this.enabled,
@@ -70,7 +74,7 @@ class Venue {
 
   @override
   String toString() {
-    return 'Venue(id: $id, name: $name, internetSpeed: $internetSpeed, americanoPrice: $americanoPrice, seatsWithSockets: $seatsWithSockets, imagePaths: $imagePaths, lat: $lat, long: $long, enabled: $enabled, notes: $notes)';
+    return 'Venue(id: $id, name: $name, internetSpeed: $internetSpeed, americanoPrice: $americanoPrice, seatsWithSockets: $seatsWithSockets, venueImages: $venueImages, lat: $lat, long: $long, enabled: $enabled, notes: $notes)';
   }
 
   @override
@@ -82,7 +86,7 @@ class Venue {
         other.internetSpeed == internetSpeed &&
         other.americanoPrice == americanoPrice &&
         other.seatsWithSockets == seatsWithSockets &&
-        listEquals(other.imagePaths, imagePaths) &&
+        listEquals(other.venueImages, venueImages) &&
         other.lat == lat &&
         other.long == long &&
         other.enabled == enabled &&
@@ -96,7 +100,7 @@ class Venue {
         internetSpeed.hashCode ^
         americanoPrice.hashCode ^
         seatsWithSockets.hashCode ^
-        imagePaths.hashCode ^
+        venueImages.hashCode ^
         lat.hashCode ^
         long.hashCode ^
         enabled.hashCode ^

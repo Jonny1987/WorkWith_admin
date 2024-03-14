@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:workwith_admin/src/features/add_venue/domain/venue_model.dart';
 import 'package:workwith_admin/src/features/edit_venue/presentation/edit_venue_popup/edit_venue_popup_controller.dart';
+import 'package:workwith_admin/src/features/edit_venue/presentation/edit_venue_popup/image_scroller.dart';
 import 'package:workwith_admin/utils/async_value_ui.dart';
 import 'package:workwith_admin/utils/constants.dart';
 
@@ -51,7 +52,7 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
       'venue_id': widget.venue.id,
     };
     ref
-        .read(editVenuePopupControllerProvider.notifier)
+        .read(editVenuePopupControllerProvider(widget.venue).notifier)
         .updateVenue(fields, notes);
   }
 
@@ -69,11 +70,18 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
   void initState() {
     super.initState();
     setFormFields();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      ref
+          .watch(editVenuePopupControllerProvider(widget.venue).notifier)
+          .getVenueImages(context);
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(editVenuePopupControllerProvider, (_, state) {
+    ref.listen(
+        editVenuePopupControllerProvider(widget.venue)
+            .select((value) => value.updateVenueStatus), (_, state) {
       state.showTopSnackbarOnError(context);
       state.whenData((data) {
         if (data != null) {
@@ -83,13 +91,16 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
       });
     });
 
-    var state = ref.watch(editVenuePopupControllerProvider);
+    var updateVenueState = ref.watch(
+        editVenuePopupControllerProvider(widget.venue)
+            .select((value) => value.updateVenueStatus));
 
     return Scaffold(
       appBar: AppBar(),
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
+          ImageScroller(venue: widget.venue),
           const SizedBox(height: 20),
           TextFormField(
             controller: _venueNameController,
@@ -143,8 +154,8 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
           ]),
           const SizedBox(height: 16),
           ElevatedButton(
-            onPressed: state.isLoading ? null : _updateVenue,
-            child: Text(state.isLoading ? 'Saving...' : 'Save'),
+            onPressed: updateVenueState.isLoading ? null : _updateVenue,
+            child: Text(updateVenueState.isLoading ? 'Saving...' : 'Save'),
           ),
         ],
       ),

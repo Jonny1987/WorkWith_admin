@@ -12,10 +12,12 @@ import 'package:workwith_admin/utils/constants.dart';
 
 class EditVenueRepository {
   Future<List<Venue>> fetchVenues(Position currentPosition) async {
-    final List<dynamic> data = await supabase.rpc('nearby_venues', params: {
-      'lat': currentPosition.latitude,
-      'long': currentPosition.longitude,
+    final List<dynamic> data =
+        await supabase.rpc('nearby_venues_admin', params: {
+      'current_lat': currentPosition.latitude,
+      'current_long': currentPosition.longitude,
     });
+    print('data: $data');
     List<Venue> venues = [for (var venueMap in data) Venue.fromMap(venueMap)];
     return venues;
   }
@@ -54,11 +56,11 @@ class EditVenueRepository {
 
     List<ImageProvider> images = [];
 
-    if (venue.imagePaths != null && venue.imagePaths!.isNotEmpty) {
-      int n = min(limit, venue.imagePaths!.length);
-      var sublist = venue.imagePaths!.sublist(0, n);
-      sublist.forEach((path) {
-        Future future = getVenueImageFromPath(path).then(
+    if (venue.venueImages != null && venue.venueImages!.isNotEmpty) {
+      int n = min(limit, venue.venueImages!.length);
+      var sublist = venue.venueImages!.sublist(0, n);
+      sublist.forEach((venueImage) {
+        Future future = getVenueImageFromPath(venueImage.imagePath).then(
           (fetchedImage) {
             images.add(fetchedImage);
           },
@@ -95,6 +97,7 @@ class EditVenueRepository {
     final List<dynamic> data = await supabase.rpc(
         'recently_updated_venues_with_notes',
         params: {'row_limit': limit});
+    print('venues: $data');
     List<Venue> venues = [for (var venueMap in data) Venue.fromMap(venueMap)];
     return venues;
   }
