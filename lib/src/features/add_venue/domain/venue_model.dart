@@ -1,5 +1,5 @@
 import 'package:flutter/foundation.dart';
-import 'package:workwith_admin/src/features/add_venue/domain/venue_image_model.dart';
+import 'package:workwith_admin/src/features/add_venue/domain/venue_photo_model.dart';
 
 class Venue {
   final int id;
@@ -7,11 +7,12 @@ class Venue {
   final int? internetSpeed;
   final double? americanoPrice;
   final int? seatsWithSockets;
-  final List<VenueImage>? venueImages;
+  final List<VenuePhoto>? venuePhotos;
   final double lat;
   final double long;
   final bool enabled;
   final String? notes;
+  final String googlePlaceDataId;
 
   Venue({
     required this.id,
@@ -19,11 +20,12 @@ class Venue {
     required this.internetSpeed,
     required this.americanoPrice,
     required this.seatsWithSockets,
-    required this.venueImages,
+    required this.venuePhotos,
     required this.lat,
     required this.long,
     required this.enabled,
     required this.notes,
+    required this.googlePlaceDataId,
   });
 
   factory Venue.fromMap(Map<String, dynamic> map) {
@@ -33,16 +35,17 @@ class Venue {
       internetSpeed: map['internet_speed'],
       americanoPrice: map['americano_price']?.toDouble(),
       seatsWithSockets: map['seats_with_sockets'],
-      venueImages: map['venue_images'] != null
+      venuePhotos: map['venue_images'] != null
           ? [
-              for (var venueImageMap in map['venue_images'])
-                VenueImage.fromMap(venueImageMap)
+              for (var venuePhotoMap in map['venue_images'])
+                VenuePhoto.fromMap(venuePhotoMap)
             ]
           : null,
       lat: map['lat'],
       long: map['long'],
       enabled: map['enabled'],
       notes: map['notes'],
+      googlePlaceDataId: map['google_place_data_id'],
     );
   }
 
@@ -52,11 +55,12 @@ class Venue {
     int? internetSpeed,
     double? americanoPrice,
     int? seatsWithSockets,
-    List<VenueImage>? venueImages,
+    List<VenuePhoto>? venuePhotos,
     double? lat,
     double? long,
     bool? enabled,
     String? notes,
+    String? googlePlaceDataId,
   }) {
     return Venue(
       id: id ?? this.id,
@@ -64,17 +68,18 @@ class Venue {
       internetSpeed: internetSpeed ?? this.internetSpeed,
       americanoPrice: americanoPrice ?? this.americanoPrice,
       seatsWithSockets: seatsWithSockets ?? this.seatsWithSockets,
-      venueImages: venueImages ?? this.venueImages,
+      venuePhotos: venuePhotos ?? this.venuePhotos,
       lat: lat ?? this.lat,
       long: long ?? this.long,
       enabled: enabled ?? this.enabled,
       notes: notes ?? this.notes,
+      googlePlaceDataId: googlePlaceDataId ?? this.googlePlaceDataId,
     );
   }
 
   @override
   String toString() {
-    return 'Venue(id: $id, name: $name, internetSpeed: $internetSpeed, americanoPrice: $americanoPrice, seatsWithSockets: $seatsWithSockets, venueImages: $venueImages, lat: $lat, long: $long, enabled: $enabled, notes: $notes)';
+    return 'Venue(id: $id, name: $name, internetSpeed: $internetSpeed, americanoPrice: $americanoPrice, seatsWithSockets: $seatsWithSockets, venuePhotos: $venuePhotos, lat: $lat, long: $long, enabled: $enabled, notes: $notes, googlePlaceDataId: $googlePlaceDataId)';
   }
 
   @override
@@ -86,11 +91,12 @@ class Venue {
         other.internetSpeed == internetSpeed &&
         other.americanoPrice == americanoPrice &&
         other.seatsWithSockets == seatsWithSockets &&
-        listEquals(other.venueImages, venueImages) &&
+        listEquals(other.venuePhotos, venuePhotos) &&
         other.lat == lat &&
         other.long == long &&
         other.enabled == enabled &&
-        other.notes == notes;
+        other.notes == notes &&
+        other.googlePlaceDataId == googlePlaceDataId;
   }
 
   @override
@@ -100,10 +106,11 @@ class Venue {
         internetSpeed.hashCode ^
         americanoPrice.hashCode ^
         seatsWithSockets.hashCode ^
-        venueImages.hashCode ^
+        venuePhotos.hashCode ^
         lat.hashCode ^
         long.hashCode ^
         enabled.hashCode ^
-        notes.hashCode;
+        notes.hashCode ^
+        googlePlaceDataId.hashCode;
   }
 }

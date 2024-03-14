@@ -49,11 +49,16 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
       'seats_with_sockets':
           seatsWithSockets == '' ? null : int.parse(seatsWithSockets),
       'enabled': _enabled,
-      'venue_id': widget.venue.id,
+      'id': widget.venue.id,
     };
+    final editedVenuePhotos = ref
+        .watch(editVenuePopupControllerProvider(widget.venue)
+            .select((value) => value.editedVenuePhotosStatus))
+        .value;
+
     ref
         .read(editVenuePopupControllerProvider(widget.venue).notifier)
-        .updateVenue(fields, notes);
+        .updateVenue(fields, notes, editedVenuePhotos);
   }
 
   @override
@@ -73,8 +78,18 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .watch(editVenuePopupControllerProvider(widget.venue).notifier)
-          .getVenueImages(context);
+          .createEditedVenuePhoto(widget.venue.venuePhotos ?? []);
+      ref
+          .watch(editVenuePopupControllerProvider(widget.venue).notifier)
+          .getVenueImageProviders(context);
     });
+  }
+
+  void _markUpdatedAndClose() {
+    if (mounted) {
+      context.showSuccessMessage(context, 'Venue updated successfully');
+      Navigator.of(context).pop();
+    }
   }
 
   @override
@@ -85,8 +100,7 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
       state.showTopSnackbarOnError(context);
       state.whenData((data) {
         if (data != null) {
-          Navigator.of(context).pop();
-          context.showSuccessMessage(context, 'Venue updated successfully');
+          _markUpdatedAndClose();
         }
       });
     });
@@ -100,7 +114,9 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
       body: ListView(
         padding: const EdgeInsets.all(16),
         children: [
-          ImageScroller(venue: widget.venue),
+          ImageScroller(
+            venue: widget.venue,
+          ),
           const SizedBox(height: 20),
           TextFormField(
             controller: _venueNameController,

@@ -51,7 +51,8 @@ void sendToLogger(
     }
     // If it has an argument then it's a family provider and there will
     //be a lot of them (eg. Venues) so we only want to print the errors
-  } else if (provider.argument == null) {
+    // } else if (provider.argument == null) {
+  } else {
     var controllerName = getControllerName(provider);
     logger.logNonErrorState(controllerName, state,
         statePropertyName: statePropertyName);

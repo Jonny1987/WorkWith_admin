@@ -22,11 +22,12 @@ class VenueThumbnailsController
     state = const AsyncValue.loading();
 
     try {
-      if (venue.venueImages == null || venue.venueImages!.isEmpty) {
+      if (venue.venuePhotos == null || venue.venuePhotos!.isEmpty) {
         throw NoImagePathsException(venue: venue);
       }
-      var venueThumbnail = await editVenueRepository
-          .getVenueThumbnailFromPath(venue.venueImages![0].imagePath);
+      var venuePhoto = venue.venuePhotos![0];
+      var venueThumbnail = await editVenueRepository.getVenueThumbnailFromPath(
+          venuePhoto.imagePath!, venuePhoto.updatedAt!);
       if (context.mounted) {
         await imagePreloader.precacheImageUtil(venueThumbnail, context);
         state = AsyncValue.data(venueThumbnail);

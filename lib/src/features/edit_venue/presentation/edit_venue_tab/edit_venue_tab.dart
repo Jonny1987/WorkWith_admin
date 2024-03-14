@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workwith_admin/src/features/add_venue/domain/venue_model.dart';
 import 'package:workwith_admin/src/features/edit_venue/presentation/edit_venue_tab/change_view_button.dart';
 import 'package:workwith_admin/src/features/edit_venue/presentation/edit_venue_tab/edit_venue_controller.dart';
 import 'package:workwith_admin/src/features/edit_venue/presentation/map_view/map_view.dart';
 import 'package:workwith_admin/src/features/edit_venue/presentation/list_view/list_view.dart';
-import 'package:workwith_admin/src/features/edit_venue/presentation/map_widget/venue_thumbnails_controller.dart';
 
 class EditVenueTab extends ConsumerStatefulWidget {
   const EditVenueTab({Key? key}) : super(key: key);
@@ -43,13 +41,13 @@ class EditVenueTabState extends ConsumerState<EditVenueTab>
     });
   }
 
-  void getVenueThumbnails(List<Venue> venues) {
-    for (var venue in venues) {
-      ref
-          .watch(venueThumbnailsControllerProvider(venue).notifier)
-          .getVenueThumbnail(context);
-    }
-  }
+  // void getVenueThumbnails(List<Venue> venues) {
+  //   for (var venue in venues) {
+  //     ref
+  //         .watch(venueThumbnailsControllerProvider(venue).notifier)
+  //         .getVenueThumbnail(context);
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -72,7 +70,7 @@ class EditVenueTabState extends ConsumerState<EditVenueTab>
         (_, state) {
       state.whenData((venues) {
         if (venues != null) {
-          getVenueThumbnails(venues);
+          // getVenueThumbnails(venues);
           _createViews();
         }
       });

@@ -33,6 +33,11 @@ class UserNotAdminException extends AppException {
       : super('user-not-admin', "Only admin users can use this app");
 }
 
+class GooglePhotosNoPhotosFound extends AppException {
+  GooglePhotosNoPhotosFound()
+      : super('google-photos-no-photos-found', "Google photos not found");
+}
+
 class LocationPermissionException {}
 
 class LocationServiceDisabledCustomException extends AppException
