@@ -1,106 +1,64 @@
 class VenuePhoto {
-  final int? id;
-  final String? imagePath;
+  final int id;
   final int position;
+  final String imagePath;
   final String? googleImageUrl;
-  final String? newGoogleImageUrl;
-  final bool? wasUpdated;
-  final bool? isVisitorImage;
-  final String? updatedAt;
-  final bool? wasInserted;
+  final String? updatedGoogleUrlAt;
 
   VenuePhoto({
     required this.id,
-    required this.imagePath,
     required this.position,
+    required this.imagePath,
     required this.googleImageUrl,
-    this.newGoogleImageUrl,
-    this.wasUpdated,
-    this.isVisitorImage,
-    required this.updatedAt,
-    required this.wasInserted,
+    required this.updatedGoogleUrlAt,
   });
 
   VenuePhoto copyWith({
     int? id,
-    String? imagePath,
     int? position,
+    String? imagePath,
     String? googleImageUrl,
-    String? newGoogleImageUrl,
-    bool? wasUpdated,
-    bool? isVisitorImage,
-    String? updatedAt,
-    bool? wasInserted,
+    String? updatedGoogleUrlAt,
   }) {
     return VenuePhoto(
       id: id ?? this.id,
-      imagePath: imagePath ?? this.imagePath,
       position: position ?? this.position,
+      imagePath: imagePath ?? this.imagePath,
       googleImageUrl: googleImageUrl ?? this.googleImageUrl,
-      newGoogleImageUrl: newGoogleImageUrl ?? this.newGoogleImageUrl,
-      wasUpdated: wasUpdated ?? this.wasUpdated,
-      isVisitorImage: isVisitorImage ?? this.isVisitorImage,
-      updatedAt: updatedAt ?? this.updatedAt,
-      wasInserted: wasInserted ?? this.wasInserted,
-    );
-  }
-
-  VenuePhoto unstage() {
-    return VenuePhoto(
-      id: id,
-      imagePath: imagePath,
-      position: position,
-      googleImageUrl: googleImageUrl,
-      newGoogleImageUrl: null,
-      wasUpdated: null,
-      isVisitorImage: null,
-      updatedAt: updatedAt,
-      wasInserted: null,
+      updatedGoogleUrlAt: updatedGoogleUrlAt ?? this.updatedGoogleUrlAt,
     );
   }
 
   factory VenuePhoto.fromMap(Map<String, dynamic> map) {
     return VenuePhoto(
       id: map['id'] as int,
-      imagePath: map['image_path'] as String,
       position: map['position'] as int,
+      imagePath: map['image_path'] as String,
       googleImageUrl: map['google_image_url'],
-      newGoogleImageUrl: null,
-      wasUpdated: null,
-      isVisitorImage: null,
-      updatedAt: map['updated_at'] as String,
-      wasInserted: null,
+      updatedGoogleUrlAt: map['updated_google_url_at'] as String?,
     );
   }
 
   @override
   String toString() =>
-      'VenuePhoto(id: $id, imagePath: $imagePath, position: $position, googleImageUrl: $googleImageUrl, newGoogleImageUrl: $newGoogleImageUrl, wasUpdated: $wasUpdated, isVisitorImage: $isVisitorImage, updatedAt: $updatedAt, wasInserted: $wasInserted)';
+      'VenuePhoto(id: $id, position: $position, googleImageUrl: $googleImageUrl, imagePath: $imagePath, updatedGoogleUrlAt: $updatedGoogleUrlAt)';
 
   @override
   bool operator ==(covariant VenuePhoto other) {
     if (identical(this, other)) return true;
 
     return other.id == id &&
-        other.imagePath == imagePath &&
         other.position == position &&
+        other.imagePath == imagePath &&
         other.googleImageUrl == googleImageUrl &&
-        other.newGoogleImageUrl == newGoogleImageUrl &&
-        other.wasUpdated == wasUpdated &&
-        other.isVisitorImage == isVisitorImage &&
-        other.updatedAt == updatedAt &&
-        other.wasInserted == wasInserted;
+        other.updatedGoogleUrlAt == updatedGoogleUrlAt;
   }
 
   @override
   int get hashCode =>
       id.hashCode ^
-      imagePath.hashCode ^
       position.hashCode ^
+      imagePath.hashCode ^
       googleImageUrl.hashCode ^
-      newGoogleImageUrl.hashCode ^
-      wasUpdated.hashCode ^
-      isVisitorImage.hashCode ^
-      updatedAt.hashCode ^
-      wasInserted.hashCode;
+      updatedGoogleUrlAt.hashCode;
 }

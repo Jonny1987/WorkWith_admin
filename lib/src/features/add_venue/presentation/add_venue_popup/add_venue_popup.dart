@@ -41,6 +41,7 @@ class AddVenuePopupState extends ConsumerState<AddVenuePopup> {
       'longitude': long,
       'latitude': lat,
       'google_maps_place_id': widget.placeDetails['placeId'],
+      'google_maps_data_id': widget.placeDetails['dataId'],
     };
     await ref
         .read(addVenuePopupControllerProvider.notifier)

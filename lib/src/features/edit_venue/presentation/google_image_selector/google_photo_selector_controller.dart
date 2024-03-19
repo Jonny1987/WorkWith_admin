@@ -20,12 +20,12 @@ class GooglePhotoSelectorController
     try {
       GooglePhotosResults? photos;
       if (nextPageToken == null) {
-        photos = await repository.getVenuePhotos(
+        photos = await repository.getGoogleVenuePhotos(
           dataId: placeDataId,
           categoryId: categoryId,
         );
       } else {
-        photos = await repository.getVenuePhotos(
+        photos = await repository.getGoogleVenuePhotos(
           dataId: placeDataId,
           categoryId: categoryId,
           nextPageToken: nextPageToken,

@@ -12,7 +12,7 @@ class Venue {
   final double long;
   final bool enabled;
   final String? notes;
-  final String googlePlaceDataId;
+  final String googleMapsDataId;
 
   Venue({
     required this.id,
@@ -25,7 +25,7 @@ class Venue {
     required this.long,
     required this.enabled,
     required this.notes,
-    required this.googlePlaceDataId,
+    required this.googleMapsDataId,
   });
 
   factory Venue.fromMap(Map<String, dynamic> map) {
@@ -45,7 +45,7 @@ class Venue {
       long: map['long'],
       enabled: map['enabled'],
       notes: map['notes'],
-      googlePlaceDataId: map['google_place_data_id'],
+      googleMapsDataId: map['google_maps_data_id'],
     );
   }
 
@@ -60,7 +60,7 @@ class Venue {
     double? long,
     bool? enabled,
     String? notes,
-    String? googlePlaceDataId,
+    String? googleMapsDataId,
   }) {
     return Venue(
       id: id ?? this.id,
@@ -73,13 +73,13 @@ class Venue {
       long: long ?? this.long,
       enabled: enabled ?? this.enabled,
       notes: notes ?? this.notes,
-      googlePlaceDataId: googlePlaceDataId ?? this.googlePlaceDataId,
+      googleMapsDataId: googleMapsDataId ?? this.googleMapsDataId,
     );
   }
 
   @override
   String toString() {
-    return 'Venue(id: $id, name: $name, internetSpeed: $internetSpeed, americanoPrice: $americanoPrice, seatsWithSockets: $seatsWithSockets, venuePhotos: $venuePhotos, lat: $lat, long: $long, enabled: $enabled, notes: $notes, googlePlaceDataId: $googlePlaceDataId)';
+    return 'Venue(id: $id, name: $name, internetSpeed: $internetSpeed, americanoPrice: $americanoPrice, seatsWithSockets: $seatsWithSockets, venuePhotos: $venuePhotos, lat: $lat, long: $long, enabled: $enabled, notes: $notes, googleMapsDataId: $googleMapsDataId)';
   }
 
   @override
@@ -96,7 +96,7 @@ class Venue {
         other.long == long &&
         other.enabled == enabled &&
         other.notes == notes &&
-        other.googlePlaceDataId == googlePlaceDataId;
+        other.googleMapsDataId == googleMapsDataId;
   }
 
   @override
@@ -111,6 +111,6 @@ class Venue {
         long.hashCode ^
         enabled.hashCode ^
         notes.hashCode ^
-        googlePlaceDataId.hashCode;
+        googleMapsDataId.hashCode;
   }
 }

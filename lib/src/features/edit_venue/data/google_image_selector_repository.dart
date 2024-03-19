@@ -16,7 +16,7 @@ class GoogleImageSelectorRepository {
   final baseApiUrl = 'https://serpapi.com/search';
   final engine = 'google_maps_photos';
 
-  Future<GooglePhotosResults> getVenuePhotos({
+  Future<GooglePhotosResults> getGoogleVenuePhotos({
     required String dataId,
     required String categoryId,
     String? nextPageToken,

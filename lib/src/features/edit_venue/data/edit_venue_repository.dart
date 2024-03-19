@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:workwith_admin/src/features/add_venue/domain/venue_photo_change_model.dart';
 import 'package:workwith_admin/src/features/add_venue/domain/venue_photo_model.dart';
 import 'package:workwith_admin/src/features/add_venue/domain/venue_model.dart';
 import 'package:workwith_admin/src/features/edit_venue/application/google_photos_service.dart';
@@ -28,7 +29,7 @@ class EditVenueRepository {
 
   Future<NetworkImage> _getSizedImageFromPath({
     required String path,
-    required String updatedAt,
+    required String? updatedGoogleUrlAt,
     int? width,
     int? height,
   }) async {
@@ -41,35 +42,38 @@ class EditVenueRepository {
       height: height,
       resize: ResizeMode.contain,
     );
-    final String imageUrl = supabase.storage
+    String imageUrl = supabase.storage
         .from('venue_images')
         .getPublicUrl(path, transform: transform);
+    if (updatedGoogleUrlAt != null) {
+      imageUrl = imageUrl + '&cacheBust=$updatedGoogleUrlAt';
+    }
     return NetworkImage(imageUrl);
   }
 
   Future<NetworkImage> getVenueThumbnailFromPath(
-      String path, String updatedAt) async {
+      String path, String? updatedGoogleUrlAt) async {
     return _getSizedImageFromPath(
       path: path,
-      updatedAt: updatedAt,
+      updatedGoogleUrlAt: updatedGoogleUrlAt,
       width: 600,
       height: 360,
     );
   }
 
   Future<NetworkImage> getVenuePhotoFromPath(
-      String path, String updatedAt) async {
+      String path, String? updatedGoogleUrlAt) async {
     return _getSizedImageFromPath(
-        path: path, updatedAt: updatedAt, height: 600);
+        path: path, updatedGoogleUrlAt: updatedGoogleUrlAt, height: 600);
   }
 
-  Future<List<NetworkImage>> fetchVenuePhotosConcurrently(
+  Future<List<NetworkImage?>> fetchVenuePhotosConcurrently(
       List<VenuePhoto> venuePhotos,
       {int limit = 1000}) async {
     int n = min(limit, venuePhotos.length);
     var sublist = venuePhotos.sublist(0, n);
 
-    List<NetworkImage?> images = List.filled(n, null, growable: false);
+    List<NetworkImage?> images = List.filled(n, null, growable: true);
 
     if (venuePhotos.isNotEmpty) {
       List<Future> allFutures = List.generate(
@@ -77,19 +81,15 @@ class EditVenueRepository {
         (index) async {
           final venuePhoto = sublist[index];
           NetworkImage networkImage;
-          if (venuePhoto.newGoogleImageUrl != null) {
-            networkImage = NetworkImage(venuePhoto.newGoogleImageUrl!);
-          } else {
-            networkImage = await getVenuePhotoFromPath(
-                venuePhoto.imagePath!, venuePhoto.updatedAt!);
-          }
+          networkImage = await getVenuePhotoFromPath(
+              venuePhoto.imagePath, venuePhoto.updatedGoogleUrlAt);
           images[index] = networkImage;
         },
       );
       // Wait for all the Futures to complete.
       await Future.wait(allFutures);
     }
-    return images.whereType<NetworkImage>().toList();
+    return images;
   }
 
   Future<Position> getCurrentLocation(
@@ -124,39 +124,52 @@ class EditVenueRepository {
     await supabase.rpc('update_venue', params: fields);
   }
 
-  Future<void> updateNotes(int venueId, String notes) async {
-    await supabase.rpc('update_venue_notes', params: {
+  Future<void> upsertNotes(int venueId, String notes) async {
+    await supabase.rpc('upsert_venue_notes', params: {
       'venue_id': venueId,
       'notes': notes,
     });
   }
 
-  void _addIdsToVenuePhotos(
-      dynamic idsAndGoogleUrls, List<VenuePhoto> venuePhotos, int venueId) {
-    Map<String, int> googleImageUrlToId = {
-      for (var map in idsAndGoogleUrls) map['google_image_url']: map['id']
-    };
-    for (var i = 0; i < venuePhotos.length; i++) {
-      if (venuePhotos[i].id == null) {
-        var id = googleImageUrlToId[venuePhotos[i].newGoogleImageUrl];
-        if (id == null) {
-          throw Exception('id is null');
-        }
-        venuePhotos[i] =
-            venuePhotos[i].copyWith(id: id, imagePath: '$venueId/$id');
-      }
-    }
-  }
+  // void _addIdsToVenuePhotos(
+  //     dynamic idsAndImagePaths, List<VenuePhoto> venuePhotos) {
+  //   Map<String, int> googleImageUrlToId = {
+  //     for (var map in idsAndImagePaths)
+  //       map['google_image_url']: map['image_path']
+  //   };
+  //   for (var i = 0; i < venuePhotos.length; i++) {
+  //     if (venuePhotos[i].id == null) {
+  //       var id = googleImageUrlToId[venuePhotos[i].newGoogleImageUrl];
+  //       if (id == null) {
+  //         throw Exception('id is null');
+  //       }
+  //       venuePhotos[i] =
+  //           venuePhotos[i].copyWith(id: id, imagePath: '$venueId/$id');
+  //     }
+  //   }
+  // }
 
-  Future<void> updateVenuePhotosConcurrently(
-      int venueId, List<VenuePhoto> venuePhotos) async {
+  Future<List<VenuePhoto>> updateVenuePhotosConcurrently(
+      int venueId, List<VenuePhotoChange?> venuePhotoChanges) async {
+    venuePhotoChanges =
+        venuePhotoChanges.where((change) => change != null).toList();
     List<Future> allFutures = [];
-    var idsAndGoogleUrls = await _updateVenuePhotoTable(venueId, venuePhotos);
-    _addIdsToVenuePhotos(idsAndGoogleUrls, venuePhotos, venueId);
-    venuePhotos.forEach((venuePhoto) {
+    List<VenuePhoto> newVenuePhotos =
+        await _updateVenuePhotoTable(venueId, venuePhotoChanges);
+
+    var changedGoogleUrls = venuePhotoChanges
+        .where((change) => change!.googleImageUrl != null)
+        .map((change) => change!.googleImageUrl)
+        .toList();
+    List<VenuePhoto> changedVenuePhotos = newVenuePhotos
+        .where((photo) => changedGoogleUrls.contains(photo.googleImageUrl))
+        .toList();
+
+    changedVenuePhotos.forEach((venuePhoto) {
       allFutures.add(_updateVenueImage(venueId, venuePhoto));
     });
     await Future.wait(allFutures);
+    return newVenuePhotos;
   }
 
   String _getMimeType(Uint8List bytes) {
@@ -178,55 +191,65 @@ class EditVenueRepository {
     throw Exception('Failed to get mime type');
   }
 
-  Future<void> _updateVenueImage(int venueId, VenuePhoto venuePhoto) async {
-    if (venuePhoto.newGoogleImageUrl == null) {
+  Future<void> _updateVenueImage(
+    int venueId,
+    VenuePhoto venuePhoto,
+  ) async {
+    if (venuePhoto.googleImageUrl == null) {
       return;
     }
     var fullImageUrl =
-        googlePhotosService.createFullImageUrl(venuePhoto.newGoogleImageUrl!);
+        googlePhotosService.createFullImageUrl(venuePhoto.googleImageUrl!);
     var imageProvider = NetworkImage(fullImageUrl);
     final bytes = await googlePhotosService.getImageBytes(imageProvider);
     var mime = _getMimeType(bytes);
     await supabase.storage.from('venue_images').uploadBinary(
-          venuePhoto.imagePath!,
+          venuePhoto.imagePath,
           bytes,
           fileOptions: FileOptions(
             contentType: mime,
             upsert: true,
           ),
         );
-    debugPrint('uploaded venue photo');
   }
 
-  Future<dynamic> _updateVenuePhotoTable(
-      int venueId, List<VenuePhoto> venuePhotos) async {
-    var venuePhotosData = venuePhotos.map((venuePhoto) {
-      Map<String, dynamic> json = {
-        'position': venuePhoto.position,
-      };
-      if (venuePhoto.newGoogleImageUrl != null) {
-        json['google_image_url'] = venuePhoto.newGoogleImageUrl;
-      }
-      if (venuePhoto.isVisitorImage != null) {
-        json['is_visitor_image'] = venuePhoto.isVisitorImage!;
-      }
-      if (venuePhoto.id != null) {
-        json['id'] = venuePhoto.id;
-      }
-      return json;
-    }).toList();
-    var toUpdate = venuePhotosData
-        .where((venuePhoto) => venuePhoto['id'] != null)
+  Future<List<VenuePhoto>> _updateVenuePhotoTable(
+      int venueId, List<VenuePhotoChange?> venuePhotoChanges) async {
+    var toUpdate = venuePhotoChanges
+        .where((change) => change?.id != null)
+        .map((changes) => changes!.toMap())
         .toList();
-    toUpdate.sort((a, b) => b['position'] - a['position']);
-    var toInsert = venuePhotosData
-        .where((venuePhoto) => venuePhoto['id'] == null)
+    var toInsert = venuePhotoChanges
+        .where((change) => change?.id == null)
+        .map((changes) => changes!.toMap())
         .toList();
-    await supabase
-        .rpc('update_venue_photos', params: {'venue_photos_data': toUpdate});
-    var idsAndGoogleUrls = await supabase.rpc('insert_venue_photos',
-        params: {'venue_photos_data': toInsert, 'venue_id': venueId});
-    return idsAndGoogleUrls;
+
+    List<dynamic> newVenueImageData = [];
+
+    if (toUpdate.isNotEmpty) {
+      newVenueImageData =
+          await supabase.rpc('update_and_get_venue_photos', params: {
+        'venue_photos_data': toUpdate,
+        'venue_id_param': venueId,
+      });
+      print('***************** updated');
+      print('newVenueImageData: $newVenueImageData');
+    }
+    if (toInsert.isNotEmpty) {
+      newVenueImageData =
+          await supabase.rpc('insert_and_get_venue_photos', params: {
+        'venue_photos_data': toInsert,
+        'venue_id_param': venueId,
+      });
+      print('***************** inserted');
+      print('newVenueImageData: $newVenueImageData');
+    }
+
+    List<VenuePhoto> venuePhotos = [
+      for (var map in newVenueImageData) VenuePhoto.fromMap(map)
+    ];
+
+    return venuePhotos;
   }
 }
 

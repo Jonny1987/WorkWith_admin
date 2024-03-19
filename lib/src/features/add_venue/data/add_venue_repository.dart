@@ -61,6 +61,24 @@ class AddVenueRepository {
         .toList();
   }
 
+  Future<String> getDataId(String placeId) async {
+    var url = 'https://www.google.com/maps/place/?q=place_id:$placeId';
+    var uri = Uri.parse(url);
+    var response = await http.get(uri);
+    var dataId = getDataIdFromHtml(response.body);
+    return dataId;
+  }
+
+  String getDataIdFromHtml(String html) {
+    final RegExp regex = RegExp('0x[[0-9a-f]+:0x[[0-9a-f]+');
+    final Iterable<Match> matches = regex.allMatches(html);
+    if (matches.isEmpty) {
+      throw Exception('No dataId found');
+    }
+    var dataId = matches.first.group(0)!;
+    return dataId;
+  }
+
   Future<dynamic> placeDetails(String placeId) async {
     final String placesKey = dotenv.env['ANDROID_MAPS_API_KEY']!;
     final url =
@@ -72,10 +90,12 @@ class AddVenueRepository {
     final response = await http.get(Uri.parse(url), headers: headers);
     final json = jsonDecode(response.body);
     final data = json['result'];
+    final dataId = await getDataId(data['place_id']);
     final result = {
       'name': data['name'],
       'location': data['geometry']['location'],
       'placeId': data['place_id'],
+      'dataId': dataId,
     };
     return result;
   }

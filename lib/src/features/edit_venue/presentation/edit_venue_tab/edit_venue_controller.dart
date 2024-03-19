@@ -1,5 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:workwith_admin/src/features/add_venue/domain/venue_photo_model.dart';
 import 'package:workwith_admin/src/features/edit_venue/data/edit_venue_repository.dart';
 import 'package:workwith_admin/src/features/edit_venue/presentation/edit_venue_tab/edit_venue_state.dart';
 
@@ -25,7 +26,23 @@ class EditVenueController extends StateNotifier<EditVenueState> {
 
     try {
       var venues = await editVenueRepository.getRecentVenues(100);
-      print(venues);
+      state = state.copyWith(
+        venuesStatus: AsyncValue.data(venues),
+      );
+    } catch (e, st) {
+      state = state.copyWith(venuesStatus: AsyncValue.error(e, st));
+    }
+  }
+
+  Future<void> refreshVenuePhotosList(
+    int venueId,
+    List<VenuePhoto> venuePhotos,
+  ) async {
+    var venues = state.venuesStatus.value;
+    state = state.copyWith(venuesStatus: const AsyncValue.loading());
+    try {
+      int index = venues!.indexWhere((element) => element.id == venueId);
+      venues[index] = venues[index].copyWith(venuePhotos: venuePhotos);
       state = state.copyWith(
         venuesStatus: AsyncValue.data(venues),
       );

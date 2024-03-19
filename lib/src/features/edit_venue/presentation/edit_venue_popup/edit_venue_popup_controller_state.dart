@@ -1,51 +1,51 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:workwith_admin/src/features/add_venue/domain/venue_photo_model.dart';
+import 'package:workwith_admin/src/features/add_venue/domain/venue_photo_change_model.dart';
 import 'package:workwith_admin/utils/custom_state.dart';
 
 class EditVenuePopupControllerState extends CustomState {
   final AsyncValue<bool?> updateVenueStatus;
-  final AsyncValue<List<NetworkImage>?> venueImageProvidersStatus;
-  final AsyncValue<List<VenuePhoto>?> editedVenuePhotosStatus;
+  final AsyncValue<List<NetworkImage?>?> venueImageProvidersStatus;
+  final AsyncValue<List<VenuePhotoChange?>?> venuePhotoChangesStatus;
 
   @override
   Map<String, AsyncValue> get stateProperties => {
         'updateVenueStatus': updateVenueStatus,
         'venueImageProvidersStatus': venueImageProvidersStatus,
-        'editedVenuePhotosStatus': editedVenuePhotosStatus,
+        'venuePhotoChangesStatus': venuePhotoChangesStatus,
       };
 
   EditVenuePopupControllerState({
     required this.updateVenueStatus,
     required this.venueImageProvidersStatus,
-    required this.editedVenuePhotosStatus,
+    required this.venuePhotoChangesStatus,
   });
 
   factory EditVenuePopupControllerState.initial() {
     return EditVenuePopupControllerState(
       updateVenueStatus: const AsyncValue.data(null),
       venueImageProvidersStatus: const AsyncValue.data(null),
-      editedVenuePhotosStatus: const AsyncValue.data(null),
+      venuePhotoChangesStatus: const AsyncValue.data(null),
     );
   }
 
   EditVenuePopupControllerState copyWith({
     AsyncValue<bool?>? updateVenueStatus,
-    AsyncValue<List<NetworkImage>?>? venueImageProvidersStatus,
-    AsyncValue<List<VenuePhoto>?>? editedVenuePhotosStatus,
+    AsyncValue<List<NetworkImage?>?>? venueImageProvidersStatus,
+    AsyncValue<List<VenuePhotoChange?>?>? venuePhotoChangesStatus,
   }) {
     return EditVenuePopupControllerState(
       updateVenueStatus: updateVenueStatus ?? this.updateVenueStatus,
       venueImageProvidersStatus:
           venueImageProvidersStatus ?? this.venueImageProvidersStatus,
-      editedVenuePhotosStatus:
-          editedVenuePhotosStatus ?? this.editedVenuePhotosStatus,
+      venuePhotoChangesStatus:
+          venuePhotoChangesStatus ?? this.venuePhotoChangesStatus,
     );
   }
 
   @override
   String toString() =>
-      'ExitVenuePopupState(updateVenueState: $updateVenueStatus, venuePhotosState: $venueImageProvidersStatus, editedVenuePhotosState: $editedVenuePhotosStatus)';
+      'ExitVenuePopupState(updateVenueState: $updateVenueStatus, venuePhotosState: $venueImageProvidersStatus, venuePhotoChangesStatus: $venuePhotoChangesStatus)';
 
   @override
   bool operator ==(covariant EditVenuePopupControllerState other) {
@@ -53,12 +53,12 @@ class EditVenuePopupControllerState extends CustomState {
 
     return other.updateVenueStatus == updateVenueStatus &&
         other.venueImageProvidersStatus == venueImageProvidersStatus &&
-        other.editedVenuePhotosStatus == editedVenuePhotosStatus;
+        other.venuePhotoChangesStatus == venuePhotoChangesStatus;
   }
 
   @override
   int get hashCode =>
       updateVenueStatus.hashCode ^
       venueImageProvidersStatus.hashCode ^
-      editedVenuePhotosStatus.hashCode;
+      venuePhotoChangesStatus.hashCode;
 }

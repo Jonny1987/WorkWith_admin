@@ -17,12 +17,14 @@ class ProviderLogger extends ProviderObserver {
     if (newValue is CustomState) {
       var changedProperty =
           newValue.changedProperty(previousValue as CustomState);
-      sendToLogger(
-        provider: provider,
-        state: changedProperty!.value,
-        logger: logger,
-        statePropertyName: changedProperty.name,
-      );
+      if (changedProperty != null) {
+        sendToLogger(
+          provider: provider,
+          state: changedProperty.value,
+          logger: logger,
+          statePropertyName: changedProperty.name,
+        );
+      }
     } else if (newValue is AsyncValue) {
       sendToLogger(provider: provider, state: newValue, logger: logger);
     } else {

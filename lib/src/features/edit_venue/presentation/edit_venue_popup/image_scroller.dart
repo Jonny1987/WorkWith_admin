@@ -41,14 +41,15 @@ class ImageScrollerState extends ConsumerState<ImageScroller> {
     setState(() {});
   }
 
-  void openGoogleSelector(Function onSelectImage) {
+  void openGoogleSelector(Function onSelectPhoto) {
     showDialog(
       context: context,
       builder: (BuildContext context) {
         return GooglePhotoSelector(
-          placeDataId: widget.venue.googlePlaceDataId,
-          venueImageIndex: currentIndex,
-          onSelectImage: onSelectImage,
+          placeDataId: widget.venue.googleMapsDataId,
+          venuePhotoIndex: currentIndex,
+          venuePhotoId: widget.venue.venuePhotos?[currentIndex].id,
+          onSelectPhoto: onSelectPhoto,
         );
       },
     );
@@ -58,7 +59,7 @@ class ImageScrollerState extends ConsumerState<ImageScroller> {
   Widget build(BuildContext context) {
     ref.listen(
         editVenuePopupControllerProvider(widget.venue)
-            .select((value) => value.editedVenuePhotosStatus), (_, state) {
+            .select((value) => value.venuePhotoChangesStatus), (_, state) {
       state.whenData((editedVenuePhotos) {
         if (editedVenuePhotos != null) {
           ref
@@ -71,9 +72,9 @@ class ImageScrollerState extends ConsumerState<ImageScroller> {
         editVenuePopupControllerProvider(widget.venue)
             .select((value) => value.venueImageProvidersStatus));
 
-    var editedVenuePhotos = ref
+    var venuePhotoChanges = ref
         .read(editVenuePopupControllerProvider(widget.venue)
-            .select((value) => value.editedVenuePhotosStatus))
+            .select((value) => value.venuePhotoChangesStatus))
         .value;
 
     return venuePhotosState.when(
@@ -81,8 +82,8 @@ class ImageScrollerState extends ConsumerState<ImageScroller> {
       error: (error, stackTrace) {
         return const Icon(Icons.error);
       },
-      data: (venuePhotoProviders) {
-        if (venuePhotoProviders == null || venuePhotoProviders.isEmpty) {
+      data: (venueImageProviders) {
+        if (venueImageProviders == null || venueImageProviders.isEmpty) {
           debugPrint('No venue images found for ${widget.venue.name}');
           return const Icon(Icons.error);
         }
@@ -92,21 +93,14 @@ class ImageScrollerState extends ConsumerState<ImageScroller> {
             children: [
               PageView.builder(
                 controller: pageController,
-                itemCount: venuePhotoProviders.length,
+                itemCount: venueImageProviders.length,
                 scrollDirection: Axis.horizontal,
                 itemBuilder: (context, index) {
-                  if (editedVenuePhotos![index].newGoogleImageUrl != null) {
-                    print(
-                        'displaying newGoogleImageUrl: ${editedVenuePhotos[index].newGoogleImageUrl}');
-                  } else {
-                    print(
-                        'displaying venuePhotoProviders: ${venuePhotoProviders[index].url}');
-                  }
                   return Image(
-                    image: editedVenuePhotos[index].newGoogleImageUrl != null
+                    image: venuePhotoChanges![index]?.googleImageUrl != null
                         ? NetworkImage(
-                            editedVenuePhotos[index].newGoogleImageUrl!)
-                        : venuePhotoProviders[index],
+                            venuePhotoChanges[index]!.googleImageUrl!)
+                        : venueImageProviders[index]!,
                     fit: BoxFit.cover,
                   );
                 },
@@ -137,7 +131,7 @@ class ImageScrollerState extends ConsumerState<ImageScroller> {
                         ),
                     text: 'I'),
               ),
-              if (editedVenuePhotos![currentIndex].wasUpdated == false)
+              if (venuePhotoChanges![currentIndex] != null)
                 Positioned(
                   top: 8,
                   right: 132,

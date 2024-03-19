@@ -53,12 +53,12 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
     };
     final editedVenuePhotos = ref
         .watch(editVenuePopupControllerProvider(widget.venue)
-            .select((value) => value.editedVenuePhotosStatus))
+            .select((value) => value.venuePhotoChangesStatus))
         .value;
 
     ref
         .read(editVenuePopupControllerProvider(widget.venue).notifier)
-        .updateVenue(fields, notes, editedVenuePhotos);
+        .updateVenue(fields, notes, editedVenuePhotos!);
   }
 
   @override
@@ -78,7 +78,8 @@ class EditVenuePopupState extends ConsumerState<EditVenuePopup> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       ref
           .watch(editVenuePopupControllerProvider(widget.venue).notifier)
-          .createEditedVenuePhoto(widget.venue.venuePhotos ?? []);
+          .createVenuePhotoChanges(widget.venue.venuePhotos ?? []);
+      print('************** getting imageProviders');
       ref
           .watch(editVenuePopupControllerProvider(widget.venue).notifier)
           .getVenueImageProviders(context);

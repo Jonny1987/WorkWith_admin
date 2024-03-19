@@ -27,7 +27,7 @@ class VenueThumbnailsController
       }
       var venuePhoto = venue.venuePhotos![0];
       var venueThumbnail = await editVenueRepository.getVenueThumbnailFromPath(
-          venuePhoto.imagePath!, venuePhoto.updatedAt!);
+          venuePhoto.imagePath, venuePhoto.updatedGoogleUrlAt);
       if (context.mounted) {
         await imagePreloader.precacheImageUtil(venueThumbnail, context);
         state = AsyncValue.data(venueThumbnail);

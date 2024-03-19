@@ -7,13 +7,15 @@ import 'package:workwith_admin/src/features/edit_venue/presentation/google_image
 
 class GooglePhotoSelector extends ConsumerStatefulWidget {
   final String placeDataId;
-  final int venueImageIndex;
-  final Function onSelectImage;
+  final int venuePhotoIndex;
+  final int? venuePhotoId;
+  final Function onSelectPhoto;
   const GooglePhotoSelector({
     Key? key,
     required this.placeDataId,
-    required this.venueImageIndex,
-    required this.onSelectImage,
+    required this.venuePhotoIndex,
+    this.venuePhotoId,
+    required this.onSelectPhoto,
   }) : super(key: key);
 
   @override
@@ -24,7 +26,7 @@ class GooglePhotoSelector extends ConsumerStatefulWidget {
 class _GooglePhotoSelectorState extends ConsumerState<GooglePhotoSelector> {
   final ScrollController _scrollController = ScrollController();
   String? nextPageToken;
-  int _selectedImageIndex = -1;
+  int _selectedPhotoIndex = -1;
   final List<bool> loadedImages = [];
 
   final categoryIdPreference = [
@@ -181,14 +183,14 @@ class _GooglePhotoSelectorState extends ConsumerState<GooglePhotoSelector> {
                         return GestureDetector(
                           onTap: () {
                             setState(() {
-                              _selectedImageIndex = index;
+                              _selectedPhotoIndex = index;
                             });
                           },
                           child: Container(
                             margin: const EdgeInsets.all(5.0),
                             decoration: BoxDecoration(
                               border: Border.all(
-                                color: _selectedImageIndex == index
+                                color: _selectedPhotoIndex == index
                                     ? Colors.blue
                                     : Colors.transparent,
                                 width: 3,
@@ -213,10 +215,11 @@ class _GooglePhotoSelectorState extends ConsumerState<GooglePhotoSelector> {
                   child: ElevatedButton(
                     child: const Text('Select'),
                     onPressed: () {
-                      if (_selectedImageIndex >= 0) {
-                        widget.onSelectImage(
-                          widget.venueImageIndex,
-                          googlePhotosPage.googlePhotos[_selectedImageIndex],
+                      if (_selectedPhotoIndex >= 0) {
+                        widget.onSelectPhoto(
+                          widget.venuePhotoIndex,
+                          widget.venuePhotoId,
+                          googlePhotosPage.googlePhotos[_selectedPhotoIndex],
                         );
                         Navigator.of(context).pop();
                       }
